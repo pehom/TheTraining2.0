@@ -26,55 +26,63 @@ public class MainActivity extends AppCompatActivity {
     private final String fileName = "trainingState";
     private TextView pullupsCountTextView, pullupsTitleTextView;
     private int pullupsCount, thePullupsCount;
+    private String daysCompleted, setsDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         String[] readFile;
-        readFile = readFromFile(this).split(">>");
-        if (readFile.length>1) {
+        readFile = readFromFile(this,fileName).split(">>");
+        Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,fileName));
+        if (readFile.length>2) {
+            daysCompleted = readFile[1].trim();
+            setsDone = readFile[2].trim();
+        } else {
+            daysCompleted="0";
+            setsDone= "0";
+        }
+
+
+        if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){
+            final float[] startx = new float[1];
+            final float[] stopx = new float[1];
+            pullupsCountTextView = findViewById(R.id.pullupsCountTextView);
+            pullupsCountTextView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN: // нажатие
+                            startx[0] = event.getRawX();
+                            break;
+                        case MotionEvent.ACTION_MOVE: // движение
+                            break;
+                        case MotionEvent.ACTION_UP: // отпускание
+                            stopx[0] = event.getRawX();
+                            Log.d("mylog", "startx = " + startx[0] + "  stopx = " + stopx[0]);
+                            if (stopx[0] > startx[0]) {
+                                pullupsCount--;
+                                if (pullupsCount > -1) {
+                                    pullupsCountTextView.setText("" + pullupsCount);
+                                }
+                            } else if (stopx[0] < startx[0]) {
+                                pullupsCount++;
+                                if (pullupsCount > -1) {
+                                    pullupsCountTextView.setText("" + pullupsCount);
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            Log.d("mylog", "action canceled");
+                            break;
+                    }
+
+                    return true;
+                }
+            });
+        } else {
             Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
             startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
-
-        } else {
-                final float[] startx = new float[1];
-                final float[] stopx = new float[1];
-                pullupsCountTextView = findViewById(R.id.pullupsCountTextView);
-                pullupsCountTextView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN: // нажатие
-                                startx[0] = event.getRawX();
-                                break;
-                            case MotionEvent.ACTION_MOVE: // движение
-                                break;
-                            case MotionEvent.ACTION_UP: // отпускание
-                                stopx[0] = event.getRawX();
-                                Log.d("mylog", "startx = " + startx[0] + "  stopx = " + stopx[0]);
-                                if (stopx[0] > startx[0]) {
-                                    pullupsCount--;
-                                    if (pullupsCount > -1) {
-                                        pullupsCountTextView.setText("" + pullupsCount);
-                                    }
-                                } else if (stopx[0] < startx[0]) {
-                                    pullupsCount++;
-                                    if (pullupsCount > -1) {
-                                        pullupsCountTextView.setText("" + pullupsCount);
-                                    }
-                                }
-                                break;
-                            case MotionEvent.ACTION_CANCEL:
-                                Log.d("mylog", "action canceled");
-                                break;
-                        }
-
-                        return true;
-                    }
-                });
-
             }
     }
 
@@ -90,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
-    private String readFromFile(Context context) {
+    private String readFromFile(Context context, String fileName) {
 
         String ret = "";
 
@@ -122,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createSchedule(View view) {
         thePullupsCount = pullupsCount;
+        writeToFile(this, ""+thePullupsCount+">>"+daysCompleted + ">>" + setsDone);
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         intent.putExtra("thePullupsCount", thePullupsCount);
         startActivity(intent);

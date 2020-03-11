@@ -1,13 +1,18 @@
 package com.android.pehom.thetraining20;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +27,7 @@ import java.io.OutputStreamWriter;
 public class ScheduleActivity extends AppCompatActivity {
     private final String fileName = "trainingState";
     private TrainingDay[] days;
-
+    private boolean resetFlag;
 
     private int  thePullupsCount;
     private int daysCompleted, setsDone;
@@ -32,8 +37,9 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+        resetFlag = false;
         String[] readFile;
-        readFile = readFromFile(this).split(">>");
+        readFile = readFromFile(this, fileName).split(">>");
 
         if (readFile.length>1) {
             Log.d("mylog", "readFile = " + readFile);
@@ -100,15 +106,16 @@ public class ScheduleActivity extends AppCompatActivity {
                 days[j].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
             }
         }
-        if (daysCompleted < 27 ){
+        if (daysCompleted < 28 ){
             days[daysCompleted].getThisDayTextView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d("mylog", "daysCompleted ="+ daysCompleted );
+                    writeToFile(getApplicationContext(), "" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
                     Intent intent = new Intent(ScheduleActivity.this, TrainingDayActivity.class);
-                    intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
+                    /*intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
                     intent.putExtra("thePullupsCount", thePullupsCount);
-                    intent.putExtra("setsDone", setsDone);
+                    intent.putExtra("setsDone", setsDone);*/
                     startActivityForResult(intent, 123);
                 }
             });
@@ -140,7 +147,7 @@ public class ScheduleActivity extends AppCompatActivity {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
-    private String readFromFile(Context context) {
+    private String readFromFile(Context context, String fileName) {
 
         String ret = "";
 
@@ -171,10 +178,65 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        writeToFile(this, "" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
-        Log.d("mylog", "onDestroy writeToFile() = " + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
-        Log.d("mylog", "onDestroy readFromFile() = " +  readFromFile(this));
+    protected void onStop() {
+        super.onStop();
+        if (!resetFlag) {
+            writeToFile(this, "" + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
+            Log.d("mylog", "onStop SchedAc writeToFile() = " + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
+            Log.d("mylog", "onStop SchedAc readFromFile() = " + readFromFile(this, fileName));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resetFlag = false;
+        String[] readFile;
+        readFile = readFromFile(this, fileName).split(">>");
+
+        if (readFile.length>1) {
+            Log.d("mylog", "readFile = " + readFile);
+
+            thePullupsCount = Integer.parseInt(readFile[0].trim());
+            daysCompleted = Integer.parseInt(readFile[1].trim());
+            setsDone = Integer.parseInt(readFile[2].trim());
+            createTrainingTable(daysCompleted);
+            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
+            scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" + daysCompleted + "\n" +
+                    "setsDone = " + setsDone);
+        } else {
+            Intent intent = getIntent();
+            thePullupsCount = intent.getIntExtra("thePullupsCount", 5);
+            createTrainingTable(0);
+            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
+            scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" +0 + "\n" +
+                    "setsDone = " + 0);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.reset_menu, menu);
+        return true;
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.reset_training:
+                writeToFile(this, "0>>0>>0");
+                resetFlag = true;
+                startActivity(new Intent(ScheduleActivity.this, MainActivity.class));
+                finishAffinity();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
