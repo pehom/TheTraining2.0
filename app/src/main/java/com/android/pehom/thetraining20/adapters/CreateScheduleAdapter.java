@@ -1,12 +1,14 @@
 package com.android.pehom.thetraining20.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.pehom.thetraining20.R;
@@ -16,21 +18,38 @@ import java.util.List;
 
 public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAdapter.CreateScheduleViewHolder> {
     private List<Exercise> exercises;
-    private RecyclerView countRecyclerView;
+    private OnCountTouchListener listener;
 
-    public CreateScheduleAdapter(List<Exercise> exercises, RecyclerView countRecyclerView) {
+    public CreateScheduleAdapter(List<Exercise> exercises, OnCountTouchListener listener) {
         this.exercises = exercises;
-        this.countRecyclerView = countRecyclerView;
+        this.listener = listener;
     }
 
-    public static class CreateScheduleViewHolder extends RecyclerView.ViewHolder {
+    public interface OnCountTouchListener{
+        void onCountTouch(TextView tv, MotionEvent event, int position);
+    }
+
+    public class CreateScheduleViewHolder extends RecyclerView.ViewHolder {
         TextView exerciseTitleTextView;
-        RecyclerView holderCountRecyclerView;
+        TextView holderCountTextView;
 
         public CreateScheduleViewHolder(@NonNull View itemView) {
             super(itemView);
             exerciseTitleTextView = itemView.findViewById(R.id.exerciseTextView);
-            holderCountRecyclerView = itemView.findViewById(R.id.countRecyclerView);
+            holderCountTextView = itemView.findViewById(R.id.countTextView);
+            holderCountTextView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onCountTouch(holderCountTextView, event, position);
+                        }
+                    }
+                    return true;
+
+                }
+            });
         }
     }
 
@@ -50,9 +69,10 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CreateScheduleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final CreateScheduleViewHolder holder, int position) {
+
         holder.exerciseTitleTextView.setText(""+ exercises.get(position).getTitle());
-        holder.holderCountRecyclerView = countRecyclerView;
+
     }
 
 }

@@ -1,6 +1,7 @@
-package com.android.pehom.thetraining20;
+package com.android.pehom.thetraining20.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,13 +9,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.pehom.thetraining20.CustomLinearLayoutManager;
+import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.adapters.CountAdapter;
 import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
 import com.android.pehom.thetraining20.models.Exercise;
-import com.android.pehom.thetraining20.models.Schedule;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private String daysCompleted, setsDone;
     private RecyclerView createSheduleRecyclerView;
     private List<Exercise> exercises;
+    private float stopX, startX, dX;
+    private CreateScheduleAdapter createScheduleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +69,62 @@ public class MainActivity extends AppCompatActivity {
             exercises.add(new Exercise(getResources().getString(R.string.pushup), 20));
 
             RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
-            CreateScheduleAdapter createScheduleAdapter = new CreateScheduleAdapter(exercises, createCountRecyclerView());
+             createScheduleAdapter = new CreateScheduleAdapter(exercises, new CreateScheduleAdapter.OnCountTouchListener() {
+                @Override
+                public void onCountTouch(TextView tv, MotionEvent event, int position) {
+                    int count;
+                    try {
+                         count = Integer.parseInt(tv.getText().toString());
+                    } catch (IllegalArgumentException iae) {
+                        Log.d("mylog", "error: ", iae);
+                        count = 0;
+                    }
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN: // нажатие
+                            startX = event.getRawX();
+                            dX = tv.getX() - event.getRawX();
+                            break;
+                        case MotionEvent.ACTION_MOVE: // движение
+                            if (event.getRawX() > startX) {
+//                                tv.animate()
+//                                        .x(event.getRawX() + dX)
+//                                        .setDuration(0)
+//                                        .start();
+                            } else {
+//                                tv.animate()
+//                                        .x(event.getRawX() - dX)
+//                                        .setDuration(0)
+//                                        .start();
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP: // отпускание
+                            stopX = event.getRawX();
+                            Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
+
+                            if (stopX - startX > 0 ) {
+                                count++;
+                                tv.setText(""+ count);
+                            } else if (stopX - startX < 0 ) {
+                                count--;
+                                tv.setText(""+ count);
+//                                v.animate()
+//                                        .x(0)
+//                                        .setDuration(0)
+//                                        .start();
+                            }
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            Log.d("mylog", "action canceled");
+
+//                            tv.animate()
+//                                    .x(0)
+//                                    .setDuration(0)
+//                                    .start();
+                            break;
+
+                    }
+                }
+            });
 
             createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
             createSheduleRecyclerView.setAdapter(createScheduleAdapter);
@@ -112,8 +174,8 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView createCountRecyclerView() {
         RecyclerView countRecyclerView = new RecyclerView(this);
-        RecyclerView.LayoutManager layoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        CustomLinearLayoutManager layoutManager =
+                new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         ArrayList<Integer> countArrayList = new ArrayList<>();
         for (int i= 0; i<500; i++){
             countArrayList.add(i);
@@ -175,5 +237,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         intent.putExtra("thePullupsCount", thePullupsCount);
         startActivity(intent);
+    }
+
+    public void addExercise(View view) {
+        TextInputEditText textInputEditText = findViewById(R.id.customExerciseTextInputEditText);
+        String customExerciseTitle = textInputEditText.getText().toString();
+        Log.d("mylog", "custom exercise title = " + customExerciseTitle);
+        if (!customExerciseTitle.isEmpty()) {
+            exercises.add(new Exercise(customExerciseTitle, 10));
+            createScheduleAdapter.notifyDataSetChanged();
+            textInputEditText.setText("");
+            textInputEditText.clearFocus();
+           // textInputEditText.set
+        }
     }
 }

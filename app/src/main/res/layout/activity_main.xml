@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".activities.MainActivity"
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark">
 
@@ -13,13 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="25dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="150dp"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         app:layout_constraintBottom_toTopOf="@+id/createScheduleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
 
 
 
@@ -37,5 +41,48 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/createScheduleButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createScheduleRecyclerView"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/customExerciseTextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_add_accent_24dp"
+
+            android:onClick="addExercise"
+            android:hint="@string/hint_main_activity_input"
+            android:textColor="@color/colorAccent"
+            android:textColorHint="@color/colorPrimary"
+            android:textSize="25sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <Button-->
+<!--        android:id="@+id/addExercise"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="44dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:text="+"-->
+<!--        android:textColor="@color/colorAccent"-->
+<!--        android:textSize="30sp"-->
+<!--        android:background="@color/colorPrimaryDark"-->
+<!--        android:onClick="addExercise"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/textInputLayout"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/createScheduleRecyclerView" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,7 @@
-package com.android.pehom.thetraining20;
+package com.android.pehom.thetraining20.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
+import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.models.TrainingDay;
 
 import java.io.BufferedReader;
