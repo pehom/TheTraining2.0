@@ -8,94 +8,30 @@
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark">
 
-
-    <TextView
-        android:id="@+id/pullupsTextView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/createScheduleRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_marginTop="150dp"
-        android:gravity="center"
-        android:text="pull-ups in a row"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="50dp"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/createScheduleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pullupsTextView">
-
-<!--        <ImageView-->
-<!--            android:id="@+id/countLeftImageView"-->
-<!--            android:layout_width="25dp"-->
-<!--            android:layout_height="match_parent"-->
-
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:src="@drawable/ic_chevron_left_accent_24dp"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-
-
-
-<!--            />-->
-
-
-     <!--   <TextView
-            android:id="@+id/pullupsCountTextView"
-            android:layout_width="210dp"
-            android:layout_height="match_parent"
-
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:text="0"
-            android:textColor="@color/colorAccent"
-            android:textSize="90sp"
-            android:textStyle="bold"
-
-            />-->
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pullupsCountRecyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingRight="50dp"
-            android:paddingLeft="50dp"/>
-<!--            android:layout_marginLeft="30dp"-->
-<!--            android:layout_marginRight="30dp"-->
-
-
-
-
-<!--        <ImageView-->
-<!--            android:id="@+id/countRightImageView"-->
-<!--            android:layout_width="25dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:src="@drawable/ic_chevron_right_accent_24dp"-->
-<!--            />-->
-
-    </LinearLayout>
-
-
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 
     <Button
-        android:id="@+id/createTrainingTableImageView"
+        android:id="@+id/createScheduleButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="50dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="create schedule"
+        android:text="@string/create_schedule_btn"
         android:textColor="@color/colorAccent"
         android:onClick="createSchedule"
         android:textSize="25sp"

@@ -1,8 +1,6 @@
 package com.android.pehom.thetraining20;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,14 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.pehom.thetraining20.adapters.PullupsCountAdapter;
+import com.android.pehom.thetraining20.adapters.CountAdapter;
+import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
+import com.android.pehom.thetraining20.models.Exercise;
+import com.android.pehom.thetraining20.models.Schedule;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView pullupsCountTextView, pullupsTitleTextView;
     private int pullupsCount, thePullupsCount;
     private String daysCompleted, setsDone;
-    private RecyclerView pullupsCountRecyclerView;
+    private RecyclerView createSheduleRecyclerView;
+    private List<Exercise> exercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){
-            pullupsCountRecyclerView = findViewById(R.id.pullupsCountRecyclerView);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-            ArrayList<Integer> pullupsCountArrayList = new ArrayList<>();
-            for (int i= 0; i<500; i++){
-                pullupsCountArrayList.add(i);
-            }
-            PullupsCountAdapter adapter = new PullupsCountAdapter(pullupsCountArrayList);
-            pullupsCountRecyclerView.setLayoutManager(layoutManager);
-            pullupsCountRecyclerView.setAdapter(adapter);
+
+            createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
+            exercises = new ArrayList<>();
+            exercises.add(new Exercise(getResources().getString(R.string.pullup), 10));
+            exercises.add(new Exercise(getResources().getString(R.string.jumps), 25));
+            exercises.add(new Exercise(getResources().getString(R.string.pushup), 20));
+
+            RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
+            CreateScheduleAdapter createScheduleAdapter = new CreateScheduleAdapter(exercises, createCountRecyclerView());
+
+            createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
+            createSheduleRecyclerView.setAdapter(createScheduleAdapter);
+
+
 
             /*final float[] startx = new float[1];
             final float[] stopx = new float[1];
@@ -104,6 +108,20 @@ public class MainActivity extends AppCompatActivity {
             Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
             startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
             }
+    }
+
+    private RecyclerView createCountRecyclerView() {
+        RecyclerView countRecyclerView = new RecyclerView(this);
+        RecyclerView.LayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        ArrayList<Integer> countArrayList = new ArrayList<>();
+        for (int i= 0; i<500; i++){
+            countArrayList.add(i);
+        }
+        CountAdapter countAdapter = new CountAdapter(countArrayList);
+        countRecyclerView.setLayoutManager(layoutManager);
+        countRecyclerView.setAdapter(countAdapter);
+        return countRecyclerView;
     }
 
 

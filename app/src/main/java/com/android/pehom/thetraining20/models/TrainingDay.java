@@ -2,28 +2,17 @@ package com.android.pehom.thetraining20.models;
 
 import android.widget.TextView;
 
+import java.util.List;
+
 public class TrainingDay {
-    private TextView thisDayTextView;
+    private List<Exercise> exercises;
     private boolean isDone;
     private int thisDayNumber;
 
-    public TrainingDay(TextView thisDayTextView, boolean isDone, int thisDayNumber) {
-        this.thisDayTextView = thisDayTextView;
+    public TrainingDay(List<Exercise> exercises, boolean isDone, int thisDayNumber) {
+        this.exercises = exercises;
         this.isDone = isDone;
         this.thisDayNumber = thisDayNumber;
-    }
-
-    public TrainingDay(TextView thisDayTextView, boolean isDone) {
-        this.thisDayTextView = thisDayTextView;
-        this.isDone = isDone;
-    }
-
-    public TextView getThisDayTextView() {
-        return thisDayTextView;
-    }
-
-    public void setThisDayTextView(TextView thisDayTextView) {
-        this.thisDayTextView = thisDayTextView;
     }
 
     public boolean isDone() {

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TheTraining</string>
+    <string name="create_schedule_btn">CREATE SCHEDULE</string>
+    <string name="pullup">pull-up</string>
+    <string name="jumps">jumps</string>
+    <string name="pushup">push-up</string>
+
 </resources>

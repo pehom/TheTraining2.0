@@ -67,64 +67,64 @@ public class ScheduleActivity extends AppCompatActivity {
 
     }
     public void createTrainingTable(int daysQompleted) {
-        days = new TrainingDay[]{new TrainingDay((TextView) findViewById(R.id.day1TextView), false, 1),
-                new TrainingDay((TextView) findViewById(R.id.day2TextView), false, 2),
-                new TrainingDay((TextView) findViewById(R.id.day3TextView), false, 3),
-                new TrainingDay((TextView) findViewById(R.id.day4TextView), false, 4),
-                new TrainingDay((TextView) findViewById(R.id.day5TextView), false, 5),
-                new TrainingDay((TextView) findViewById(R.id.day6TextView), false, 6),
-                new TrainingDay((TextView) findViewById(R.id.day7TextView), false, 7),
-                new TrainingDay((TextView) findViewById(R.id.day8TextView), false, 8),
-                new TrainingDay((TextView) findViewById(R.id.day9TextView), false, 9),
-                new TrainingDay((TextView) findViewById(R.id.day10TextView), false, 10),
-                new TrainingDay((TextView) findViewById(R.id.day11TextView), false, 11),
-                new TrainingDay((TextView) findViewById(R.id.day12TextView), false, 12),
-                new TrainingDay((TextView) findViewById(R.id.day13TextView), false, 13),
-                new TrainingDay((TextView) findViewById(R.id.day14TextView), false, 14),
-                new TrainingDay((TextView) findViewById(R.id.day15TextView), false, 15),
-                new TrainingDay((TextView) findViewById(R.id.day16TextView), false, 16),
-                new TrainingDay((TextView) findViewById(R.id.day17TextView), false, 17),
-                new TrainingDay((TextView) findViewById(R.id.day18TextView), false, 18),
-                new TrainingDay((TextView) findViewById(R.id.day19TextView), false, 19),
-                new TrainingDay((TextView) findViewById(R.id.day20TextView), false, 20),
-                new TrainingDay((TextView) findViewById(R.id.day21TextView), false, 21),
-                new TrainingDay((TextView) findViewById(R.id.day22TextView), false, 22),
-                new TrainingDay((TextView) findViewById(R.id.day23TextView), false, 23),
-                new TrainingDay((TextView) findViewById(R.id.day24TextView), false, 24),
-                new TrainingDay((TextView) findViewById(R.id.day25TextView), false, 25),
-                new TrainingDay((TextView) findViewById(R.id.day26TextView), false, 26),
-                new TrainingDay((TextView) findViewById(R.id.day27TextView), false, 27),
-                new TrainingDay((TextView) findViewById(R.id.day28TextView), false, 28),
-        };
-        daysCompleted =  daysQompleted;
-        for (int i=0;i<28; i++){
-            if (i<daysCompleted && daysCompleted>0)  days[i].setDone(true);
-            //  Log.d("mylog", "day" + i + " isDone = " + days[i].isDone());
-        }
-
-
-        for (int j = 0; j<days.length;j++){
-            days[j].getThisDayTextView().setText(""+(j+1));
-            if (days[j].isDone()){
-                days[j].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
-            } else {
-                days[j].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
-            }
-        }
-        if (daysCompleted < 28 ){
-            days[daysCompleted].getThisDayTextView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d("mylog", "daysCompleted ="+ daysCompleted );
-                    writeToFile(getApplicationContext(), trainingState,"" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
-                    Intent intent = new Intent(ScheduleActivity.this, TrainingDayActivity.class);
-                    /*intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
-                    intent.putExtra("thePullupsCount", thePullupsCount);
-                    intent.putExtra("setsDone", setsDone);*/
-                    startActivityForResult(intent, 123);
-                }
-            });
-        }
+//        days = new TrainingDay[]{new TrainingDay((TextView) findViewById(R.id.day1TextView), false, 1),
+//                new TrainingDay((TextView) findViewById(R.id.day2TextView), false, 2),
+//                new TrainingDay((TextView) findViewById(R.id.day3TextView), false, 3),
+//                new TrainingDay((TextView) findViewById(R.id.day4TextView), false, 4),
+//                new TrainingDay((TextView) findViewById(R.id.day5TextView), false, 5),
+//                new TrainingDay((TextView) findViewById(R.id.day6TextView), false, 6),
+//                new TrainingDay((TextView) findViewById(R.id.day7TextView), false, 7),
+//                new TrainingDay((TextView) findViewById(R.id.day8TextView), false, 8),
+//                new TrainingDay((TextView) findViewById(R.id.day9TextView), false, 9),
+//                new TrainingDay((TextView) findViewById(R.id.day10TextView), false, 10),
+//                new TrainingDay((TextView) findViewById(R.id.day11TextView), false, 11),
+//                new TrainingDay((TextView) findViewById(R.id.day12TextView), false, 12),
+//                new TrainingDay((TextView) findViewById(R.id.day13TextView), false, 13),
+//                new TrainingDay((TextView) findViewById(R.id.day14TextView), false, 14),
+//                new TrainingDay((TextView) findViewById(R.id.day15TextView), false, 15),
+//                new TrainingDay((TextView) findViewById(R.id.day16TextView), false, 16),
+//                new TrainingDay((TextView) findViewById(R.id.day17TextView), false, 17),
+//                new TrainingDay((TextView) findViewById(R.id.day18TextView), false, 18),
+//                new TrainingDay((TextView) findViewById(R.id.day19TextView), false, 19),
+//                new TrainingDay((TextView) findViewById(R.id.day20TextView), false, 20),
+//                new TrainingDay((TextView) findViewById(R.id.day21TextView), false, 21),
+//                new TrainingDay((TextView) findViewById(R.id.day22TextView), false, 22),
+//                new TrainingDay((TextView) findViewById(R.id.day23TextView), false, 23),
+//                new TrainingDay((TextView) findViewById(R.id.day24TextView), false, 24),
+//                new TrainingDay((TextView) findViewById(R.id.day25TextView), false, 25),
+//                new TrainingDay((TextView) findViewById(R.id.day26TextView), false, 26),
+//                new TrainingDay((TextView) findViewById(R.id.day27TextView), false, 27),
+//                new TrainingDay((TextView) findViewById(R.id.day28TextView), false, 28),
+//        };
+//        daysCompleted =  daysQompleted;
+//        for (int i=0;i<28; i++){
+//            if (i<daysCompleted && daysCompleted>0)  days[i].setDone(true);
+//            //  Log.d("mylog", "day" + i + " isDone = " + days[i].isDone());
+//        }
+//
+//
+//        for (int j = 0; j<days.length;j++){
+//            days[j].getThisDayTextView().setText(""+(j+1));
+//            if (days[j].isDone()){
+//                days[j].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+//            } else {
+//                days[j].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+//            }
+//        }
+//        if (daysCompleted < 28 ){
+//            days[daysCompleted].getThisDayTextView().setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.d("mylog", "daysCompleted ="+ daysCompleted );
+//                    writeToFile(getApplicationContext(), trainingState,"" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
+//                    Intent intent = new Intent(ScheduleActivity.this, TrainingDayActivity.class);
+//                    /*intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
+//                    intent.putExtra("thePullupsCount", thePullupsCount);
+//                    intent.putExtra("setsDone", setsDone);*/
+//                    startActivityForResult(intent, 123);
+//                }
+//            });
+//        }
 
     }
 
