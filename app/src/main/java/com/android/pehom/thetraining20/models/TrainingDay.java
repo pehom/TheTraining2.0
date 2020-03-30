@@ -1,4 +1,4 @@
-package com.android.pehom.thetraining20;
+package com.android.pehom.thetraining20.models;
 
 import android.widget.TextView;
 

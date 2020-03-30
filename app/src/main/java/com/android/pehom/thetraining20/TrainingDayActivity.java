@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.pehom.thetraining20.models.TrainingDay;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -72,7 +74,7 @@ public class TrainingDayActivity extends AppCompatActivity {
                     sets[setsDone].setDone(true);
                     sets[setsDone].getThisDayTextView().setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
                     sets[setsDone].getThisDayTextView().setClickable(false);
-
+//
                     if (setsDone < 4) {
                         setsDone++;
                         TextView trainingDayInfoTextView = findViewById(R.id.trainingDayInfoTextView);
@@ -172,7 +174,7 @@ public class TrainingDayActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.reset_training:
+            case R.id.resetTraining:
                 writeToFile(this, "0>>0>>0");
                 resetFlag = true;
                 startActivity(new Intent(TrainingDayActivity.this, MainActivity.class));

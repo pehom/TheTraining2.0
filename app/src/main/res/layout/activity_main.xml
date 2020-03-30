@@ -8,50 +8,84 @@
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark">
 
-    <LinearLayout
-        android:id="@+id/createTableLinearLayout"
+
+    <TextView
+        android:id="@+id/pullupsTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
+
+        android:layout_marginTop="150dp"
+        android:gravity="center"
+        android:text="pull-ups in a row"
+        android:textColor="@color/colorAccent"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:text="pull-ups in a row"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pullupsTextView">
 
-        <ImageView
-            android:id="@+id/countLeftImageView"
-            android:layout_width="25dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_chevron_left_accent_24dp" />
+<!--        <ImageView-->
+<!--            android:id="@+id/countLeftImageView"-->
+<!--            android:layout_width="25dp"-->
+<!--            android:layout_height="match_parent"-->
 
-        <TextView
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:src="@drawable/ic_chevron_left_accent_24dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+
+
+
+<!--            />-->
+
+
+     <!--   <TextView
             android:id="@+id/pullupsCountTextView"
-            android:layout_width="0dp"
+            android:layout_width="210dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:gravity="center"
             android:text="0"
             android:textColor="@color/colorAccent"
-            android:textSize="30sp"
+            android:textSize="90sp"
             android:textStyle="bold"
 
-            />
+            />-->
 
-        <ImageView
-            android:id="@+id/countRightImageView"
-            android:layout_width="25dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pullupsCountRecyclerView"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_chevron_right_accent_24dp" />
+            android:paddingRight="50dp"
+            android:paddingLeft="50dp"/>
+<!--            android:layout_marginLeft="30dp"-->
+<!--            android:layout_marginRight="30dp"-->
+
+
+
+
+<!--        <ImageView-->
+<!--            android:id="@+id/countRightImageView"-->
+<!--            android:layout_width="25dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:src="@drawable/ic_chevron_right_accent_24dp"-->
+<!--            />-->
 
     </LinearLayout>
+
+
+
+
+
 
     <Button
         android:id="@+id/createTrainingTableImageView"

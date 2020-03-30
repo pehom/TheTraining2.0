@@ -3,6 +3,8 @@ package com.android.pehom.thetraining20;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,26 +17,34 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.pehom.thetraining20.adapters.PullupsCountAdapter;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private final String fileName = "trainingState";
+    private final String trainingState = "trainingState";
+    private final String trainingProgress = "trainingProgress";
     private TextView pullupsCountTextView, pullupsTitleTextView;
     private int pullupsCount, thePullupsCount;
     private String daysCompleted, setsDone;
+    private RecyclerView pullupsCountRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         String[] readFile;
-        readFile = readFromFile(this,fileName).split(">>");
-        Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,fileName));
+        readFile = readFromFile(this,trainingState).split(">>");
+        Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,trainingState));
         if (readFile.length>2) {
             daysCompleted = readFile[1].trim();
             setsDone = readFile[2].trim();
@@ -45,7 +55,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){
-            final float[] startx = new float[1];
+            pullupsCountRecyclerView = findViewById(R.id.pullupsCountRecyclerView);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+            ArrayList<Integer> pullupsCountArrayList = new ArrayList<>();
+            for (int i= 0; i<500; i++){
+                pullupsCountArrayList.add(i);
+            }
+            PullupsCountAdapter adapter = new PullupsCountAdapter(pullupsCountArrayList);
+            pullupsCountRecyclerView.setLayoutManager(layoutManager);
+            pullupsCountRecyclerView.setAdapter(adapter);
+
+            /*final float[] startx = new float[1];
             final float[] stopx = new float[1];
             pullupsCountTextView = findViewById(R.id.pullupsCountTextView);
             pullupsCountTextView.setOnTouchListener(new View.OnTouchListener() {
@@ -79,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                     return true;
                 }
-            });
+            });*/
         } else {
             Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
             startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
@@ -87,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void writeToFile(Context context, String data) {
+    public void writeToFile(Context context, String fileName,  String data) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
 
@@ -129,8 +149,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSchedule(View view) {
-        thePullupsCount = pullupsCount;
-        writeToFile(this, ""+thePullupsCount+">>"+daysCompleted + ">>" + setsDone);
+     //   thePullupsCount = pullupsCountRecyclerView.getChildViewHolder(this).
+        writeToFile(this, trainingState, ""+thePullupsCount+">>"+daysCompleted + ">>" + setsDone);
+        String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        String prevTraining = readFromFile(this, trainingProgress);
+        writeToFile(this, trainingProgress, prevTraining + "\n" + dayLongName + "   pull-ups count = " + thePullupsCount );
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         intent.putExtra("thePullupsCount", thePullupsCount);
         startActivity(intent);

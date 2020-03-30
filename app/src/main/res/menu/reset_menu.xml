@@ -2,7 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/reset_training"
+        android:id="@+id/resetTraining"
         android:title="Reset the training"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/trainingProgress"
+        android:title="Training progress"
         app:showAsAction="never"/>
 </menu>

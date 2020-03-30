@@ -5,17 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.pehom.thetraining20.models.TrainingDay;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -25,7 +26,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class ScheduleActivity extends AppCompatActivity {
-    private final String fileName = "trainingState";
+    private final String trainingState = "trainingState";
+    private final String trainingProgress = "trainingProgress";
     private TrainingDay[] days;
     private boolean resetFlag;
 
@@ -39,7 +41,7 @@ public class ScheduleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_schedule);
         resetFlag = false;
         String[] readFile;
-        readFile = readFromFile(this, fileName).split(">>");
+        readFile = readFromFile(this, trainingState).split(">>");
 
         if (readFile.length>1) {
             Log.d("mylog", "readFile = " + readFile);
@@ -59,6 +61,9 @@ public class ScheduleActivity extends AppCompatActivity {
             scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" +0 + "\n" +
                     "setsDone = " + 0);
         }
+
+        TextView trainingProgressTextView = findViewById(R.id.trainingProgressTextView);
+        trainingProgressTextView.setMovementMethod(new ScrollingMovementMethod());
 
     }
     public void createTrainingTable(int daysQompleted) {
@@ -111,7 +116,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d("mylog", "daysCompleted ="+ daysCompleted );
-                    writeToFile(getApplicationContext(), "" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
+                    writeToFile(getApplicationContext(), trainingState,"" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
                     Intent intent = new Intent(ScheduleActivity.this, TrainingDayActivity.class);
                     /*intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
                     intent.putExtra("thePullupsCount", thePullupsCount);
@@ -136,7 +141,7 @@ public class ScheduleActivity extends AppCompatActivity {
         }
     }
 
-    public void writeToFile(Context context, String data) {
+    public void writeToFile(Context context,String fileName,  String data) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
 
@@ -181,9 +186,9 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!resetFlag) {
-            writeToFile(this, "" + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
+            writeToFile(this, trainingState, "" + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
             Log.d("mylog", "onStop SchedAc writeToFile() = " + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
-            Log.d("mylog", "onStop SchedAc readFromFile() = " + readFromFile(this, fileName));
+            Log.d("mylog", "onStop SchedAc readFromFile() = " + readFromFile(this, trainingState));
         }
     }
 
@@ -192,7 +197,7 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onResume();
         resetFlag = false;
         String[] readFile;
-        readFile = readFromFile(this, fileName).split(">>");
+        readFile = readFromFile(this, trainingState).split(">>");
 
         if (readFile.length>1) {
             Log.d("mylog", "readFile = " + readFile);
@@ -231,11 +236,17 @@ public class ScheduleActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.reset_training:
-                writeToFile(this, "0>>0>>0");
+            case R.id.resetTraining:
+                writeToFile(this, trainingState, "0>>0>>0");
                 resetFlag = true;
                 startActivity(new Intent(ScheduleActivity.this, MainActivity.class));
                 finishAffinity();
+                break;
+            case R.id.trainingProgress:
+                TextView trainingProgressTextView = findViewById(R.id.trainingProgressTextView);
+                TextView trainingProgressTitleTextView = findViewById(R.id.trainingProgressTitleTextView);
+                trainingProgressTitleTextView.setVisibility(View.VISIBLE);
+
         }
         return super.onOptionsItemSelected(item);
     }
