@@ -2,11 +2,14 @@ package com.android.pehom.thetraining20.models;
 
 public class Exercise {
     private String title;
-    private int rowCount;
+    private int setsNumber;
+    private int set;
 
-    public Exercise(String title, int rowCount) {
+
+    public Exercise(String title, int setsNumber, int set) {
         this.title = title;
-        this.rowCount = rowCount;
+        this.setsNumber = setsNumber;
+        this.set = set;
     }
 
     public String getTitle() {
@@ -17,11 +20,19 @@ public class Exercise {
         this.title = title;
     }
 
-    public int getRowCount() {
-        return rowCount;
+    public int getSet() {
+        return set;
     }
 
-    public void setRowCount(int rowCount) {
-        this.rowCount = rowCount;
+    public void setSet(int set) {
+        this.set = set;
+    }
+
+    public int getSetsNumber() {
+        return setsNumber;
+    }
+
+    public void setSetsNumber(int setsNumber) {
+        this.setsNumber = setsNumber;
     }
 }

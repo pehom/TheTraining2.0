@@ -1,7 +1,8 @@
 package com.android.pehom.thetraining20.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.pehom.thetraining20.CustomLinearLayoutManager;
@@ -19,7 +21,6 @@ import com.android.pehom.thetraining20.adapters.CountAdapter;
 import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
 import com.android.pehom.thetraining20.models.Exercise;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private float stopX, startX, dX;
     private CreateScheduleAdapter createScheduleAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,118 +60,143 @@ public class MainActivity extends AppCompatActivity {
             daysCompleted="0";
             setsDone= "0";
         }
-
-
         if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){
 
             createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
             exercises = new ArrayList<>();
-            exercises.add(new Exercise(getResources().getString(R.string.pullup), 10));
-            exercises.add(new Exercise(getResources().getString(R.string.jumps), 25));
-            exercises.add(new Exercise(getResources().getString(R.string.pushup), 20));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise1), 5,10));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise2), 5,  25));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise3), 5,  20));
 
             RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
-             createScheduleAdapter = new CreateScheduleAdapter(exercises, new CreateScheduleAdapter.OnCountTouchListener() {
-                @Override
-                public void onCountTouch(TextView tv, MotionEvent event, int position) {
-                    int count;
-                    try {
-                         count = Integer.parseInt(tv.getText().toString());
-                    } catch (IllegalArgumentException iae) {
-                        Log.d("mylog", "error: ", iae);
-                        count = 0;
-                    }
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN: // нажатие
-                            startX = event.getRawX();
-                            dX = tv.getX() - event.getRawX();
-                            break;
-                        case MotionEvent.ACTION_MOVE: // движение
-                            if (event.getRawX() > startX) {
-//                                tv.animate()
-//                                        .x(event.getRawX() + dX)
-//                                        .setDuration(0)
-//                                        .start();
-                            } else {
-//                                tv.animate()
-//                                        .x(event.getRawX() - dX)
-//                                        .setDuration(0)
-//                                        .start();
-                            }
-                            break;
-                        case MotionEvent.ACTION_UP: // отпускание
-                            stopX = event.getRawX();
-                            Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
-
-                            if (stopX - startX > 0 ) {
-                                count++;
-                                tv.setText(""+ count);
-                            } else if (stopX - startX < 0 ) {
-                                count--;
-                                tv.setText(""+ count);
-//                                v.animate()
-//                                        .x(0)
-//                                        .setDuration(0)
-//                                        .start();
-                            }
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                            Log.d("mylog", "action canceled");
-
-//                            tv.animate()
-//                                    .x(0)
-//                                    .setDuration(0)
-//                                    .start();
-                            break;
-
-                    }
-                }
-            });
+            createScheduleAdapter = buildScheduleAdapter();
 
             createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
             createSheduleRecyclerView.setAdapter(createScheduleAdapter);
 
-
-
-            /*final float[] startx = new float[1];
-            final float[] stopx = new float[1];
-            pullupsCountTextView = findViewById(R.id.pullupsCountTextView);
-            pullupsCountTextView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN: // нажатие
-                            startx[0] = event.getRawX();
-                            break;
-                        case MotionEvent.ACTION_MOVE: // движение
-                            break;
-                        case MotionEvent.ACTION_UP: // отпускание
-                            stopx[0] = event.getRawX();
-                            Log.d("mylog", "startx = " + startx[0] + "  stopx = " + stopx[0]);
-                            if (stopx[0] > startx[0]) {
-                                pullupsCount--;
-                                if (pullupsCount > -1) {
-                                    pullupsCountTextView.setText("" + pullupsCount);
-                                }
-                            } else if (stopx[0] < startx[0]) {
-                                pullupsCount++;
-                                if (pullupsCount > -1) {
-                                    pullupsCountTextView.setText("" + pullupsCount);
-                                }
-                            }
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                            Log.d("mylog", "action canceled");
-                            break;
-                    }
-
-                    return true;
-                }
-            });*/
         } else {
             Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
             startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
             }
+    }
+
+    private CreateScheduleAdapter buildScheduleAdapter(){
+        final CreateScheduleAdapter adapter = new CreateScheduleAdapter(exercises, new CreateScheduleAdapter.OnTitleTouchListener() {
+            @Override
+            public void onTitleTouch(RecyclerView.ViewHolder viewHolder, MotionEvent event, int position) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: // нажатие
+                        startX = event.getRawX();
+                        dX = viewHolder.itemView.getX() - event.getRawX();
+                        break;
+                    case MotionEvent.ACTION_MOVE: // движение
+                        if (event.getRawX() > startX) {
+                            viewHolder.itemView.animate()
+                                    .x(event.getRawX() + dX)
+                                    .setDuration(0)
+                                    .start();
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP: // отпускание
+                        stopX = event.getRawX();
+                        Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
+
+                        if (stopX - startX > 200) {
+                            createScheduleAdapter.removeItem(viewHolder);
+                        }
+                        else {
+                            viewHolder.itemView.animate()
+                                    .x(0)
+                                    .setDuration(0)
+                                    .start();
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        Log.d("mylog", "action canceled");
+
+                        viewHolder.itemView.animate()
+                                .x(0)
+                                .setDuration(0)
+                                .start();
+                        break;
+                }
+            }
+        }, new CreateScheduleAdapter.OnSetsNumberTouchListener() {
+            @Override
+            public void onSetsNumberTouch(TextView tv, MotionEvent event, int position) {
+                int setsNumber;
+                try {
+                    setsNumber = Integer.parseInt(tv.getText().toString());
+                } catch (IllegalArgumentException iae) {
+                    Log.d("mylog", "error: ", iae);
+                    setsNumber = 0;
+                }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: // нажатие
+                        startX = event.getRawX();
+                        dX = tv.getX() - event.getRawX();
+                        break;
+                    case MotionEvent.ACTION_MOVE: // движение
+                        if (event.getRawX() > startX) {
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP: // отпускание
+                        stopX = event.getRawX();
+                        Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
+
+                        if (stopX - startX > 0) {
+                            if (setsNumber>0)  {
+                                setsNumber--;
+                            }
+                            tv.setText("" + setsNumber);
+                        } else if (stopX - startX < 0) {
+                            setsNumber++;
+                            tv.setText("" + setsNumber);
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        Log.d("mylog", "action canceled");
+                        break;
+                }
+            }
+        }, new CreateScheduleAdapter.OnSetTouchListener() {
+            @Override
+            public void onCountTouch(TextView tv, MotionEvent event, int position) {
+                int count;
+                try {
+                    count = Integer.parseInt(tv.getText().toString());
+                } catch (IllegalArgumentException iae) {
+                    Log.d("mylog", "error: ", iae);
+                    count = 0;
+                }
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: // нажатие
+                        startX = event.getRawX();
+                        dX = tv.getX() - event.getRawX();
+                        break;
+                    case MotionEvent.ACTION_MOVE: // движение
+                        break;
+                    case MotionEvent.ACTION_UP: // отпускание
+                        stopX = event.getRawX();
+                        Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
+
+                        if (stopX - startX > 0) {
+                            if (count>0) {
+                                count--;
+                            }
+                            tv.setText("" + count);
+                        } else if (stopX - startX < 0) {
+                            count++;
+                            tv.setText("" + count);
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                        Log.d("mylog", "action canceled");
+                        break;
+                }
+            }
+        });
+        return adapter;
     }
 
     private RecyclerView createCountRecyclerView() {
@@ -183,7 +210,26 @@ public class MainActivity extends AppCompatActivity {
         CountAdapter countAdapter = new CountAdapter(countArrayList);
         countRecyclerView.setLayoutManager(layoutManager);
         countRecyclerView.setAdapter(countAdapter);
+
+        /*ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                return 0;
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                onChildDraw();
+            }
+        };*/
         return countRecyclerView;
+
+
     }
 
 
@@ -239,12 +285,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+
     public void addExercise(View view) {
         TextInputEditText textInputEditText = findViewById(R.id.customExerciseTextInputEditText);
         String customExerciseTitle = textInputEditText.getText().toString();
         Log.d("mylog", "custom exercise title = " + customExerciseTitle);
         if (!customExerciseTitle.isEmpty()) {
-            exercises.add(new Exercise(customExerciseTitle, 10));
+            exercises.add(new Exercise(customExerciseTitle, 5,10));
             createScheduleAdapter.notifyDataSetChanged();
             textInputEditText.setText("");
             textInputEditText.clearFocus();

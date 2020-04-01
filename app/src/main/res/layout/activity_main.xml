@@ -14,17 +14,11 @@
         android:layout_height="0dp"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="150dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
+
         app:layout_constraintBottom_toTopOf="@+id/createScheduleButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
-
-
-
 
 
     <Button
@@ -32,12 +26,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="90dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
+        android:onClick="createSchedule"
         android:text="@string/create_schedule_btn"
         android:textColor="@color/colorAccent"
-        android:onClick="createSchedule"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -54,6 +48,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createScheduleRecyclerView"
+        android:textColorHint="@color/colorAccent"
+        app:hintTextAppearance="@style/TextLabel"
+        app:helperTextEnabled="true"
+        app:helperTextTextAppearance="@style/TextAppearanceHelperText"
+        app:helperText="@string/helper_main_activity_input"
+
+
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -63,9 +64,8 @@
             android:drawableEnd="@drawable/ic_add_accent_24dp"
 
             android:onClick="addExercise"
-            android:hint="@string/hint_main_activity_input"
+
             android:textColor="@color/colorAccent"
-            android:textColorHint="@color/colorPrimary"
             android:textSize="25sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
