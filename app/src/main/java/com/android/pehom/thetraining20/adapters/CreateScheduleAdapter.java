@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.models.Exercise;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.chauthai.swipereveallayout.*;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -25,11 +28,15 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
     private int removedPosition;
     private Exercise removedItem;
 
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+
+
     public CreateScheduleAdapter(List<Exercise> exercises, OnTitleTouchListener titleTouchListener, OnSetsNumberTouchListener setsNumberTouchListener, OnSetTouchListener setTouchListener) {
         this.exercises = exercises;
         this.titleTouchListener = titleTouchListener;
         this.setsNumberTouchListener = setsNumberTouchListener;
         this.setTouchListener = setTouchListener;
+       viewBinderHelper.setOpenOnlyOne(true);
     }
 
     public interface OnSetTouchListener {
@@ -62,7 +69,43 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
     public CreateScheduleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.create_schedule_recycler_view_item, parent, false);
-        CreateScheduleViewHolder viewHolder = new CreateScheduleViewHolder(view);
+        final CreateScheduleViewHolder viewHolder = new CreateScheduleViewHolder(view);
+        viewHolder.exerciseTitleTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (titleTouchListener != null) {
+                    int position = viewHolder.getAdapterPosition();
+                    if (position!= RecyclerView.NO_POSITION) {
+                        titleTouchListener.onTitleTouch(viewHolder, event, position);
+                    }
+                }
+                return true;
+            }
+        });
+        viewHolder.setTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (setTouchListener != null) {
+                    int position = viewHolder.getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        setTouchListener.onCountTouch(viewHolder.setTextView, event, position);
+                    }
+                }
+                return true;
+            }
+        });
+        viewHolder.setsNumberTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (setsNumberTouchListener != null) {
+                    int position = viewHolder.getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        setsNumberTouchListener.onSetsNumberTouch(viewHolder.setsNumberTextView, event, position);
+                    }
+                }
+                return true;
+            }
+        });
 
         return viewHolder;
     }
@@ -75,40 +118,14 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
     @Override
     public void onBindViewHolder(@NonNull final CreateScheduleViewHolder holder, final int position) {
 
+        // Save/restore the open/close state.
+        // You need to provide a String id which uniquely defines the data object.
+        //viewBinderHelper.bind(holder.swipeRevealLayout, dataObject.getId());
+
         holder.exerciseTitleTextView.setText(""+ exercises.get(position).getTitle());
-        holder.exerciseTitleTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (titleTouchListener != null) {
-                    if (position!= RecyclerView.NO_POSITION) {
-                        titleTouchListener.onTitleTouch(holder, event, position);
-                    }
-                }
-                return true;
-            }
-        });
-        holder.setTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (setTouchListener != null) {
-                    if (position != RecyclerView.NO_POSITION) {
-                        setTouchListener.onCountTouch(holder.setTextView, event, position);
-                    }
-                }
-                return true;
-            }
-        });
-        holder.setsNumberTextView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (setsNumberTouchListener != null) {
-                    if (position != RecyclerView.NO_POSITION) {
-                        setsNumberTouchListener.onSetsNumberTouch(holder.setsNumberTextView, event, position);
-                    }
-                }
-                return true;
-            }
-        });
+        holder.setsNumberTextView.setText(""+exercises.get(position).getSetsNumber());
+        holder.setTextView.setText(""+exercises.get(position).getSet());
+
     }
 
     public void removeItem(final RecyclerView.ViewHolder holder){
@@ -116,6 +133,10 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
         removedItem = exercises.get(removedPosition);
         exercises.remove(removedPosition);
         notifyItemRemoved(removedPosition);
+        holder.itemView.animate()
+                .x(0)
+                .setDuration(0)
+                .start();
         Snackbar.make(holder.itemView, removedItem.getTitle() + " deleted", Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo_snackbar, new View.OnClickListener() {
                     @Override

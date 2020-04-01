@@ -20,6 +20,7 @@ import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.adapters.CountAdapter;
 import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
 import com.android.pehom.thetraining20.models.Exercise;
+import com.android.pehom.thetraining20.models.Schedule;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.BufferedReader;
@@ -36,8 +37,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private final String trainingState = "trainingState";
     private final String trainingProgress = "trainingProgress";
-    private TextView pullupsCountTextView, pullupsTitleTextView;
-    private int pullupsCount, thePullupsCount;
+//    private TextView pullupsCountTextView, pullupsTitleTextView;
+//    private int pullupsCount, thePullupsCount;
     private String daysCompleted, setsDone;
     private RecyclerView createSheduleRecyclerView;
     private List<Exercise> exercises;
@@ -50,23 +51,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] readFile;
-        readFile = readFromFile(this,trainingState).split(">>");
+        String readFile;
+        readFile = readFromFile(this,trainingState);
         Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,trainingState));
-        if (readFile.length>2) {
-            daysCompleted = readFile[1].trim();
+        if (!readFile.equals("")) {
+            /*daysCompleted = readFile[1].trim();
             setsDone = readFile[2].trim();
         } else {
             daysCompleted="0";
             setsDone= "0";
         }
-        if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){
+        if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){*/
 
             createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
+            createSheduleRecyclerView.setHasFixedSize(true);
             exercises = new ArrayList<>();
-            exercises.add(new Exercise(getResources().getString(R.string.exercise1), 5,10));
-            exercises.add(new Exercise(getResources().getString(R.string.exercise2), 5,  25));
-            exercises.add(new Exercise(getResources().getString(R.string.exercise3), 5,  20));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise1), 5,10,0));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise2), 5,  25,0));
+            exercises.add(new Exercise(getResources().getString(R.string.exercise3), 5,  20,0));
 
             RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
             createScheduleAdapter = buildScheduleAdapter();
@@ -149,9 +151,11 @@ public class MainActivity extends AppCompatActivity {
                                 setsNumber--;
                             }
                             tv.setText("" + setsNumber);
+                            exercises.get(position).setSetsNumber(setsNumber);
                         } else if (stopX - startX < 0) {
                             setsNumber++;
                             tv.setText("" + setsNumber);
+                            exercises.get(position).setSetsNumber(setsNumber);
                         }
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -162,12 +166,12 @@ public class MainActivity extends AppCompatActivity {
         }, new CreateScheduleAdapter.OnSetTouchListener() {
             @Override
             public void onCountTouch(TextView tv, MotionEvent event, int position) {
-                int count;
+                int set;
                 try {
-                    count = Integer.parseInt(tv.getText().toString());
+                    set = Integer.parseInt(tv.getText().toString());
                 } catch (IllegalArgumentException iae) {
                     Log.d("mylog", "error: ", iae);
-                    count = 0;
+                    set = 0;
                 }
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: // нажатие
@@ -181,13 +185,16 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
 
                         if (stopX - startX > 0) {
-                            if (count>0) {
-                                count--;
+                            if (set>0) {
+                                set--;
                             }
-                            tv.setText("" + count);
+                            tv.setText("" + set);
+                            exercises.get(position).setSet(set);
+
                         } else if (stopX - startX < 0) {
-                            count++;
-                            tv.setText("" + count);
+                            set++;
+                            tv.setText("" + set);
+                            exercises.get(position).setSet(set);
                         }
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -276,12 +283,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void createSchedule(View view) {
      //   thePullupsCount = pullupsCountRecyclerView.getChildViewHolder(this).
-        writeToFile(this, trainingState, ""+thePullupsCount+">>"+daysCompleted + ">>" + setsDone);
-        String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+        Schedule newSchedule = new Schedule("test title", exercises, 0);
+        writeToFile(this, trainingState, newSchedule.toString());
+        String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.getDefault());
         String prevTraining = readFromFile(this, trainingProgress);
-        writeToFile(this, trainingProgress, prevTraining + "\n" + dayLongName + "   pull-ups count = " + thePullupsCount );
+        writeToFile(this, trainingProgress, prevTraining + "\n" + dayLongName + ".i." + newSchedule.toString() );
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
-        intent.putExtra("thePullupsCount", thePullupsCount);
+       // intent.putExtra("schedule", newSchedule.toString());
         startActivity(intent);
     }
 
@@ -292,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         String customExerciseTitle = textInputEditText.getText().toString();
         Log.d("mylog", "custom exercise title = " + customExerciseTitle);
         if (!customExerciseTitle.isEmpty()) {
-            exercises.add(new Exercise(customExerciseTitle, 5,10));
+            exercises.add(new Exercise(customExerciseTitle, 5,10,0));
             createScheduleAdapter.notifyDataSetChanged();
             textInputEditText.setText("");
             textInputEditText.clearFocus();

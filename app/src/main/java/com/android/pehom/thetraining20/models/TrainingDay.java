@@ -5,14 +5,18 @@ import android.widget.TextView;
 import java.util.List;
 
 public class TrainingDay {
+  //  private TextView thisDayTextView;
     private List<Exercise> exercises;
-    private boolean isDone;
     private int thisDayNumber;
+    private boolean isDone;
 
-    public TrainingDay(List<Exercise> exercises, boolean isDone, int thisDayNumber) {
+    public TrainingDay() {
+    }
+
+    public TrainingDay(List<Exercise> exercises, int thisDayNumber, boolean isDone) {
         this.exercises = exercises;
-        this.isDone = isDone;
         this.thisDayNumber = thisDayNumber;
+        this.isDone = isDone;
     }
 
     public boolean isDone() {
@@ -29,5 +33,13 @@ public class TrainingDay {
 
     public void setThisDayNumber(int thisDayNumber) {
         this.thisDayNumber = thisDayNumber;
+    }
+
+    public List<Exercise> getExercises() {
+        return exercises;
+    }
+
+    public void setExercises(List<Exercise> exercises) {
+        this.exercises = exercises;
     }
 }
