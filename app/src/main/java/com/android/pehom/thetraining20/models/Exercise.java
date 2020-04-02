@@ -8,6 +8,8 @@ public class Exercise {
     private int set;
     private int setsDone;
 
+    public final static String toStringDivider = ">>";
+
     public Exercise(){
 
     }
@@ -53,13 +55,18 @@ public class Exercise {
 
     @Override
     public String toString() {
-        String s = title + ">>" + setsNumber + ">>" + set + ">>" + setsDone;
+        String s = title + toStringDivider + setsNumber + toStringDivider + set + toStringDivider + setsDone;
         Log.d("mylog", "exercise.toString = " + s);
         return s;
     }
 
     public static Exercise fromString(String data) {
-        String[] splittedData = data.split(">>");
+        Log.d("fromString", "exercise.fromString data = "+data);
+        String[] splittedData = data.split(toStringDivider);
+        Log.d("fromString", "exercise.fromString splittedData[0] = "+splittedData[0]);
+        Log.d("fromString", "exercise.fromString splittedData[1] = "+splittedData[1]);
+        Log.d("fromString", "exercise.fromString splittedData[2] = "+splittedData[2]);
+        Log.d("fromString", "exercise.fromString splittedData[3] = "+splittedData[3]);
         Exercise exercise = new Exercise(splittedData[0].trim(), Integer.parseInt(splittedData[1].trim())
                 , Integer.parseInt(splittedData[2].trim()), Integer.parseInt(splittedData[3].trim()) );
         return exercise;

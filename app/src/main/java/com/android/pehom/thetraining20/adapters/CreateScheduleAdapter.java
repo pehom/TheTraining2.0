@@ -121,7 +121,7 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
         // Save/restore the open/close state.
         // You need to provide a String id which uniquely defines the data object.
         //viewBinderHelper.bind(holder.swipeRevealLayout, dataObject.getId());
-
+        holder.itemView.setVisibility(View.VISIBLE);
         holder.exerciseTitleTextView.setText(""+ exercises.get(position).getTitle());
         holder.setsNumberTextView.setText(""+exercises.get(position).getSetsNumber());
         holder.setTextView.setText(""+exercises.get(position).getSet());
@@ -133,6 +133,7 @@ public class CreateScheduleAdapter extends RecyclerView.Adapter<CreateScheduleAd
         removedItem = exercises.get(removedPosition);
         exercises.remove(removedPosition);
         notifyItemRemoved(removedPosition);
+        holder.itemView.setVisibility(View.INVISIBLE);
         holder.itemView.animate()
                 .x(0)
                 .setDuration(0)

@@ -21,6 +21,7 @@ import com.android.pehom.thetraining20.adapters.CountAdapter;
 import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
 import com.android.pehom.thetraining20.models.Exercise;
 import com.android.pehom.thetraining20.models.Schedule;
+import com.android.pehom.thetraining20.models.TrainingDay;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.BufferedReader;
@@ -55,14 +56,6 @@ public class MainActivity extends AppCompatActivity {
         readFile = readFromFile(this,trainingState);
         Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,trainingState));
         if (!readFile.equals("")) {
-            /*daysCompleted = readFile[1].trim();
-            setsDone = readFile[2].trim();
-        } else {
-            daysCompleted="0";
-            setsDone= "0";
-        }
-        if (readFile[0].trim().equals("0") && readFile[1].trim().equals("0") && readFile[2].trim().equals("0")){*/
-
             createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
             createSheduleRecyclerView.setHasFixedSize(true);
             exercises = new ArrayList<>();
@@ -283,8 +276,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void createSchedule(View view) {
      //   thePullupsCount = pullupsCountRecyclerView.getChildViewHolder(this).
-        Schedule newSchedule = new Schedule("test title", exercises, 0);
+        List<TrainingDay> trainingDays = new ArrayList<>();
+        for (int i=0;i<28;i++){
+            trainingDays.add(new TrainingDay(exercises, i, false));
+        }
+        Schedule newSchedule = new Schedule("test title", exercises, trainingDays,  0);
         writeToFile(this, trainingState, newSchedule.toString());
+        Log.d("mylog", "newSchedule.toString() = " + newSchedule.toString());
         String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.getDefault());
         String prevTraining = readFromFile(this, trainingProgress);
         writeToFile(this, trainingProgress, prevTraining + "\n" + dayLongName + ".i." + newSchedule.toString() );

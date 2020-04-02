@@ -2,6 +2,8 @@ package com.android.pehom.thetraining20.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.android.pehom.thetraining20.R;
+import com.android.pehom.thetraining20.adapters.TrainingDayAdapter;
+import com.android.pehom.thetraining20.models.Schedule;
 import com.android.pehom.thetraining20.models.TrainingDay;
 
 import java.io.BufferedReader;
@@ -23,24 +27,27 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class TrainingDayActivity extends AppCompatActivity {
-    private final String fileName = "trainingState";
+    private final String trainingState = "trainingState";
 
     private int dayNumber, thePullupsCount, setsDone, daysCompleted;
     private TrainingDay[] sets;
     private View.OnClickListener onSetClickListener;
     private  boolean resetFlag;
+    private Schedule schedule;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_day);
         resetFlag = false;
-        String[] readFile;
-        readFile = readFromFile(this, fileName).split(">>");
-        if (readFile.length > 2) {
-            thePullupsCount = Integer.parseInt(readFile[0].trim());
-            daysCompleted = Integer.parseInt(readFile[1].trim());
-            setsDone = Integer.parseInt(readFile[2].trim());
-            dayNumber = daysCompleted+1;
+        String readFile;
+        readFile = readFromFile(this, trainingState);
+        if (!readFile.isEmpty()) {
+            schedule = Schedule.fromString(readFile);
+            RecyclerView recyclerView = findViewById(R.id.trainingDayRecyclerView);
+            TrainingDayAdapter adapter = new TrainingDayAdapter(schedule.getExercises());
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(layoutManager);
         }
 
         /*final Intent intent = getIntent();
@@ -100,7 +107,7 @@ public class TrainingDayActivity extends AppCompatActivity {
     }
     public void writeToFile(Context context, String data) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(trainingState, Context.MODE_PRIVATE));
 
             outputStreamWriter.write(data);
             outputStreamWriter.close();
@@ -148,7 +155,7 @@ public class TrainingDayActivity extends AppCompatActivity {
 
             writeToFile(this, "" + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
             Log.d("mylog", "onStop TrainAc writeToFile() = " + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
-            Log.d("mylog", "onStop TrainAc readFromFile() = " + readFromFile(this, fileName));
+            Log.d("mylog", "onStop TrainAc readFromFile() = " + readFromFile(this, trainingState));
         }
     }
 
@@ -157,7 +164,7 @@ public class TrainingDayActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        writeToFile(this, "" + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
+        writeToFile(this, schedule.toString());
         Log.d("mylog", "onBackPressed writeToFile() = " + thePullupsCount + ">>"  + daysCompleted+ ">>" +  setsDone);
 
     }

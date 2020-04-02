@@ -11,6 +11,8 @@ public class Schedule {
     private List<TrainingDay> trainingDays;
     private int daysCompleted;
 
+    private static String toStringDivider = ".I.";
+
     public Schedule() {
     }
 
@@ -55,28 +57,30 @@ public class Schedule {
 
     @Override
     public String toString() {
-        String s = "";
-        for (int i=0; i< exercises.size(); i++){
-            s+=exercises.get(i).toString() + "(.)(.)";
-        }
-        String r = title + "(.)(.)" + s + daysCompleted;
+        String r = title + toStringDivider + Converter.exercisesToString(exercises) + toStringDivider
+                + Converter.trainingDaysToString(trainingDays) + toStringDivider+ daysCompleted;
         Log.d("mylog", "Schedule.toString = " + r);
         return r;
     }
 
     public static Schedule fromString(String data) {
+        Log.d("scheduleFromString", "data = "+data);
+
         Schedule schedule = new Schedule();
-        String[] splittedData = data.split("(.)(.)");
+        String[] splittedData = data.split(toStringDivider);
+        Log.d("scheduleFromString", "splittedData[0] = "+splittedData[0]);
+        Log.d("scheduleFromString", "splittedData[1] = "+splittedData[1]);
+        Log.d("scheduleFromString", "splittedData[2] = "+splittedData[2]);
+        Log.d("scheduleFromString", "splittedData[3] = "+splittedData[3]);
+
+
         schedule.setTitle(splittedData[0].trim());
-        schedule.setDaysCompleted(Integer.parseInt(splittedData[splittedData.length-1].trim()));
-        List<Exercise> exercises = new ArrayList<>();
-        for (int i=1;i<splittedData.length-1;i++) {
-            if (splittedData[i] !=null) {
-                Exercise exercise = Exercise.fromString(splittedData[i].trim());
-                exercises.add(exercise);
-            }
-        }
+
+        schedule.setDaysCompleted(Integer.parseInt(splittedData[3].trim()));
+        List<Exercise> exercises = Converter.exercisesFromString(splittedData[1]);
+        List<TrainingDay> trainingDays = Converter.trainingDaysFromString(splittedData[2]);
         schedule.setExercises(exercises);
+        schedule.setTrainingDays(trainingDays);
         return schedule;
     }
 }
