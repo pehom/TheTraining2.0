@@ -14,9 +14,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.pehom.thetraining20.R;
+import com.android.pehom.thetraining20.models.Converter;
+import com.android.pehom.thetraining20.models.Exercise;
 import com.android.pehom.thetraining20.models.Schedule;
 import com.android.pehom.thetraining20.models.TrainingDay;
 
@@ -26,12 +29,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class ScheduleActivity extends AppCompatActivity {
     private final String trainingState = "trainingState";
     private final String trainingProgress = "trainingProgress";
+    private  final String trainingProgressDivider = "!!!";
+
     private TrainingDay[] days;
     private boolean resetFlag;
+   // private boolean isInfoSchedule;
     private Schedule schedule;
 
     private int  thePullupsCount;
@@ -43,6 +50,7 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         resetFlag = false;
+      //  isInfoSchedule = true;
         String readFile;
         readFile = readFromFile(this, trainingState);
 
@@ -53,18 +61,15 @@ public class ScheduleActivity extends AppCompatActivity {
             daysCompleted = schedule.getDaysCompleted();
            // setsDone = Integer.parseInt(readFile[2].trim());
             createTrainingTable(daysCompleted);
-            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
-          //  scheduleInfoTextView.setText(readFile);
-        } else {
-            /*Intent intent = getIntent();
-            thePullupsCount = intent.getIntExtra("thePullupsCount", 5);
-            createTrainingTable(0);
-            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
-            scheduleInfoTextView.setText(readFile);*/
-        }
+            TextView infoTextView = findViewById(R.id.infoTextView);
+            infoTextView.setMovementMethod(new ScrollingMovementMethod());
+            if (schedule.getExercises()!= null) {
+                for (int i = 0; i<schedule.getExercises().size(); i++){
+                    infoTextView.append(schedule.getExercises().get(i).forPrint() + "\n");
+                }
+            }
 
-        TextView trainingProgressTextView = findViewById(R.id.trainingProgressTextView);
-        trainingProgressTextView.setMovementMethod(new ScrollingMovementMethod());
+        }
 
     }
     public void createTrainingTable(int daysQompleted) {
@@ -110,10 +115,8 @@ public class ScheduleActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123) {
             if (resultCode == RESULT_OK){
-                setsDone = data.getIntExtra("setsDone", 0);
-                TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
-                scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" +daysCompleted + "\n" +
-                        "setsDone = " + setsDone);
+                TextView infoTextView = findViewById(R.id.infoTextView);
+                infoTextView.setText("set has been done");
             }
         }
     }
@@ -163,8 +166,8 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!resetFlag) {
-            writeToFile(this, trainingState, "" + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
-            Log.d("mylog", "onStop SchedAc writeToFile() = " + thePullupsCount + ">>" + daysCompleted + ">>" + setsDone);
+            writeToFile(this, trainingState, schedule.toString());
+            Log.d("mylog", "onStop SchedAc writeToFile() = " + schedule.toString());
             Log.d("mylog", "onStop SchedAc readFromFile() = " + readFromFile(this, trainingState));
         }
     }
@@ -175,22 +178,15 @@ public class ScheduleActivity extends AppCompatActivity {
         resetFlag = false;
         String readFile;
         readFile = readFromFile(this, trainingState);
+        Log.d("mylog", "scheduleActivity. onResume readFile = " + readFile);
 
         if (!readFile.equals("")) {
-            Log.d("mylog", "readFile = " + readFile);
             Schedule schedule = Schedule.fromString(readFile);
 
             createTrainingTable(schedule.getDaysCompleted());
-            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
+            TextView infoTextView = findViewById(R.id.infoTextView);
             /*scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" + daysCompleted + "\n" +
                     "setsDone = " + setsDone);*/
-        } else {
-            /*Intent intent = getIntent();
-            thePullupsCount = intent.getIntExtra("thePullupsCount", 5);
-            createTrainingTable(0);
-            TextView scheduleInfoTextView = findViewById(R.id.scheduleInfoTextView);
-            scheduleInfoTextView.setText("thePullUpsCount = " + thePullupsCount + "\n" + "daysCompleted =" +0 + "\n" +
-                    "setsDone = " + 0);*/
         }
     }
 
@@ -203,7 +199,7 @@ public class ScheduleActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.reset_menu, menu);
+        menuInflater.inflate(R.menu.schedule_activity_menu, menu);
         return true;
 
     }
@@ -212,17 +208,64 @@ public class ScheduleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.resetTraining:
-                writeToFile(this, trainingState, "0>>0>>0");
+                writeToFile(this, trainingState, "");
                 resetFlag = true;
                 startActivity(new Intent(ScheduleActivity.this, MainActivity.class));
                 finishAffinity();
                 break;
             case R.id.trainingProgress:
-                TextView trainingProgressTextView = findViewById(R.id.trainingProgressTextView);
-                TextView trainingProgressTitleTextView = findViewById(R.id.trainingProgressTitleTextView);
-                trainingProgressTitleTextView.setVisibility(View.VISIBLE);
+                TextView infoTextView = findViewById(R.id.infoTextView);
+                infoTextView.setMovementMethod(new ScrollingMovementMethod());
+                infoTextView.setText("");
+                TextView infoTitleTextView = findViewById(R.id.infoTitleTextView);
+                infoTitleTextView.setText(R.string.info_textview_training_progress);
+                Log.d("trainingProgress", "readData = " + readFromFile(this, trainingProgress));
+                String[] splittedData = readFromFile(this, trainingProgress).split(trainingProgressDivider);
+                if (splittedData.length>1) {
+                    for (int i = 0; i< splittedData.length; i++) {
+                        String[] splittedSchedule = splittedData[i].split("schDi");
+                        infoTextView.append(splittedSchedule[0] + "\n");
+                        List<Exercise> exercises = Converter.exercisesFromString(splittedSchedule[1]);
+                        for (int j = 0; j<exercises.size(); j++) {
+                            infoTextView.append(exercises.get(j).forPrint() + "\n" );
+                        }
+                        infoTextView.append("\n");
+                    }
+                } else {
+                    infoTextView.setText(R.string.training_progress_info_cleared);
+                }
+
+                Button closeInfoButton = findViewById(R.id.closeTrainingProcessButton);
+                closeInfoButton.setVisibility(View.VISIBLE);
+                findViewById(R.id.clearTrainingProgress).setVisibility(View.VISIBLE);
+                break;
+
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void closeInfo(View view) {
+        TextView infoTextView = findViewById(R.id.infoTextView);
+        TextView infoTitleTextView = findViewById(R.id.infoTitleTextView);
+        infoTitleTextView.setText(R.string.info_title_schedule);
+        infoTextView.setMovementMethod(new ScrollingMovementMethod());
+        infoTextView.setText("");
+        for (int i = 0; i<schedule.getExercises().size(); i++){
+            infoTextView.append(schedule.getExercises().get(i).forPrint() + "\n");
+        }
+       // isInfoSchedule = true;
+        Button closeInfoButton = findViewById(R.id.closeTrainingProcessButton);
+        closeInfoButton.setVisibility(View.INVISIBLE);
+        findViewById(R.id.clearTrainingProgress).setVisibility(View.INVISIBLE);
+    }
+
+    public void clearTrainingProgress(View view) {
+        writeToFile(this, trainingProgress, "");
+        Log.d("trainingProgress", "trainingProgress cleared");
+        Log.d("trainingProgress", "after clearing training progress =" + readFromFile(this, trainingProgress));
+        TextView infoTextView = findViewById(R.id.infoTextView);
+        infoTextView.setText(readFromFile(this, trainingProgress));
+
     }
 }

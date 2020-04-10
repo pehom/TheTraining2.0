@@ -68,19 +68,21 @@ public class Schedule {
 
         Schedule schedule = new Schedule();
         String[] splittedData = data.split(toStringDivider);
-        Log.d("scheduleFromString", "splittedData[0] = "+splittedData[0]);
-        Log.d("scheduleFromString", "splittedData[1] = "+splittedData[1]);
-        Log.d("scheduleFromString", "splittedData[2] = "+splittedData[2]);
-        Log.d("scheduleFromString", "splittedData[3] = "+splittedData[3]);
+        if (splittedData.length == 4) {
+            Log.d("scheduleFromString", "splittedData[0] = " + splittedData[0]);
+            Log.d("scheduleFromString", "splittedData[1] = " + splittedData[1]);
+            Log.d("scheduleFromString", "splittedData[2] = " + splittedData[2]);
+            Log.d("scheduleFromString", "splittedData[3] = " + splittedData[3]);
 
 
-        schedule.setTitle(splittedData[0].trim());
+            schedule.setTitle(splittedData[0].trim());
 
-        schedule.setDaysCompleted(Integer.parseInt(splittedData[3].trim()));
-        List<Exercise> exercises = Converter.exercisesFromString(splittedData[1]);
-        List<TrainingDay> trainingDays = Converter.trainingDaysFromString(splittedData[2]);
-        schedule.setExercises(exercises);
-        schedule.setTrainingDays(trainingDays);
+            schedule.setDaysCompleted(Integer.parseInt(splittedData[3].trim()));
+            List<Exercise> exercises = Converter.exercisesFromString(splittedData[1]);
+            List<TrainingDay> trainingDays = Converter.trainingDaysFromString(splittedData[2]);
+            schedule.setExercises(exercises);
+            schedule.setTrainingDays(trainingDays);
+        }
         return schedule;
     }
 }

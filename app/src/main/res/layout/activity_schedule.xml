@@ -415,59 +415,61 @@
 
     <TextView
 
-        android:id="@+id/textView3"
+        android:id="@+id/infoTitleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="9dp"
         android:paddingLeft="14dp"
         android:paddingRight="14dp"
-        android:text="current training info:"
+        android:text="@string/info_textview_schedule"
         android:textColor="@color/colorAccent"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/scheduleInfoTextView"
-        app:layout_constraintStart_toStartOf="parent" />
-    <TextView
-        android:id="@+id/scheduleInfoTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:text="info:"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/trainingProgressTitleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:gravity="left"
-        android:paddingLeft="14dp"
-        android:text="training progress:"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp"
-        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tableLinearLayout" />
 
     <TextView
-        android:id="@+id/trainingProgressTextView"
+        android:id="@+id/infoTextView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="9dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="9dp"
         android:layout_marginBottom="10dp"
         android:gravity="left"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp"
+        android:paddingLeft="14dp"
         android:scrollbars="vertical"
-
         android:textColor="@color/colorAccent"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/closeTrainingProcessButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trainingProgressTitleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/infoTitleTextView" />
+
+    <Button
+        android:id="@+id/closeTrainingProcessButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="10dp"
+        android:onClick="closeInfo"
+        android:text="@string/close_training_process_button_text"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/clearTrainingProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/clear_button"
+        android:onClick="clearTrainingProgress"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

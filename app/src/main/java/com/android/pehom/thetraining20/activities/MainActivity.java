@@ -1,44 +1,46 @@
 package com.android.pehom.thetraining20.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+        import androidx.annotation.NonNull;
+        import androidx.appcompat.app.AppCompatActivity;
+        import androidx.recyclerview.widget.ItemTouchHelper;
+        import androidx.recyclerview.widget.LinearLayoutManager;
+        import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+        import android.content.Context;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.util.Log;
+        import android.view.MotionEvent;
+        import android.view.View;
+        import android.widget.LinearLayout;
+        import android.widget.TextView;
 
-import com.android.pehom.thetraining20.CustomLinearLayoutManager;
-import com.android.pehom.thetraining20.R;
-import com.android.pehom.thetraining20.adapters.CountAdapter;
-import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
-import com.android.pehom.thetraining20.models.Exercise;
-import com.android.pehom.thetraining20.models.Schedule;
-import com.android.pehom.thetraining20.models.TrainingDay;
-import com.google.android.material.textfield.TextInputEditText;
+        import com.android.pehom.thetraining20.CustomLinearLayoutManager;
+        import com.android.pehom.thetraining20.R;
+        import com.android.pehom.thetraining20.adapters.CountAdapter;
+        import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
+        import com.android.pehom.thetraining20.models.Converter;
+        import com.android.pehom.thetraining20.models.Exercise;
+        import com.android.pehom.thetraining20.models.Schedule;
+        import com.android.pehom.thetraining20.models.TrainingDay;
+        import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+        import java.io.BufferedReader;
+        import java.io.FileNotFoundException;
+        import java.io.IOException;
+        import java.io.InputStream;
+        import java.io.InputStreamReader;
+        import java.io.OutputStreamWriter;
+        import java.util.ArrayList;
+        import java.util.Calendar;
+        import java.util.List;
+        import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final String trainingState = "trainingState";
     private final String trainingProgress = "trainingProgress";
-//    private TextView pullupsCountTextView, pullupsTitleTextView;
+    private  final String trainingProgressDivider = "!!!";
+    //    private TextView pullupsCountTextView, pullupsTitleTextView;
 //    private int pullupsCount, thePullupsCount;
     private String daysCompleted, setsDone;
     private RecyclerView createSheduleRecyclerView;
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         String readFile;
         readFile = readFromFile(this,trainingState);
         Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,trainingState));
-        if (!readFile.equals("")) {
+        if (readFile.equals("")) {
             createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
             createSheduleRecyclerView.setHasFixedSize(true);
             exercises = new ArrayList<>();
@@ -69,10 +71,11 @@ public class MainActivity extends AppCompatActivity {
             createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
             createSheduleRecyclerView.setAdapter(createScheduleAdapter);
 
-        } else {
+        } else if(!readFile.isEmpty()){
             Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
+            Log.d("mylog", "this part");
             startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
-            }
+        }
     }
 
     private CreateScheduleAdapter buildScheduleAdapter(){
@@ -199,44 +202,9 @@ public class MainActivity extends AppCompatActivity {
         return adapter;
     }
 
-    private RecyclerView createCountRecyclerView() {
-        RecyclerView countRecyclerView = new RecyclerView(this);
-        CustomLinearLayoutManager layoutManager =
-                new CustomLinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        ArrayList<Integer> countArrayList = new ArrayList<>();
-        for (int i= 0; i<500; i++){
-            countArrayList.add(i);
-        }
-        CountAdapter countAdapter = new CountAdapter(countArrayList);
-        countRecyclerView.setLayoutManager(layoutManager);
-        countRecyclerView.setAdapter(countAdapter);
-
-        /*ItemTouchHelper.Callback callback = new ItemTouchHelper.Callback() {
-            @Override
-            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-                return 0;
-            }
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                onChildDraw();
-            }
-        };*/
-        return countRecyclerView;
-
-
-    }
-
-
     public void writeToFile(Context context, String fileName,  String data) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE));
-
             outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
@@ -244,10 +212,9 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
+
     private String readFromFile(Context context, String fileName) {
-
         String ret = "";
-
         try {
             InputStream inputStream = context.openFileInput(fileName);
 
@@ -275,19 +242,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSchedule(View view) {
-     //   thePullupsCount = pullupsCountRecyclerView.getChildViewHolder(this).
         List<TrainingDay> trainingDays = new ArrayList<>();
         for (int i=0;i<28;i++){
             trainingDays.add(new TrainingDay(exercises, i, false));
         }
-        Schedule newSchedule = new Schedule("test title", exercises, trainingDays,  0);
+        TextInputEditText titleInputEditText = findViewById(R.id.scheduleTitleEditText);
+        String title = titleInputEditText.getText().toString();
+        Schedule newSchedule = new Schedule(title, exercises, trainingDays,  0);
         writeToFile(this, trainingState, newSchedule.toString());
         Log.d("mylog", "newSchedule.toString() = " + newSchedule.toString());
         String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.getDefault());
-        String prevTraining = readFromFile(this, trainingProgress);
-        writeToFile(this, trainingProgress, prevTraining + "\n" + dayLongName + ".i." + newSchedule.toString() );
+        updateTrainingProgress(newSchedule);
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
-       // intent.putExtra("schedule", newSchedule.toString());
         startActivity(intent);
     }
 
@@ -302,7 +268,16 @@ public class MainActivity extends AppCompatActivity {
             createScheduleAdapter.notifyDataSetChanged();
             textInputEditText.setText("");
             textInputEditText.clearFocus();
-           // textInputEditText.set
+            // textInputEditText.set
         }
+    }
+
+    public void updateTrainingProgress (Schedule schedule) {
+        String data = schedule.getTitle() +"schDi" +
+                Converter.exercisesToString(schedule.getExercises()) + trainingProgressDivider;
+        String s = readFromFile(this, trainingProgress);
+        Log.d("updateTrainingProgress", "readTrainingProgress =" + s );
+        writeToFile(this, trainingProgress, s +data );
+        Log.d ("updateTrainingProgress", "writeTrainingProgress =" + s + data);
     }
 }

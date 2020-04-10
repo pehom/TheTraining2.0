@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Converter {
-    private static String exercisesToStringDivider = "&&&*";
+    private static String exercisesToStringDivider = "&&&";
     private static String trainingDaysToStringDivider = "%%%%";
 
     public static String exercisesToString (List<Exercise> exercises){
@@ -20,7 +20,7 @@ public class Converter {
     public static List<Exercise> exercisesFromString (String data) {
         String[] splittedData = data.split(exercisesToStringDivider);
         List<Exercise> exercises = new ArrayList<>();
-        for (int i=0; i< splittedData.length-1; i++){
+        for (int i=0; i< splittedData.length; i++){
             Exercise exercise = Exercise.fromString(splittedData[i].trim());
             exercises.add(exercise);
         }

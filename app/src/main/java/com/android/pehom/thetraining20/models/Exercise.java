@@ -71,4 +71,8 @@ public class Exercise {
                 , Integer.parseInt(splittedData[2].trim()), Integer.parseInt(splittedData[3].trim()) );
         return exercise;
     }
+
+    public String forPrint () {
+        return title + "  " + setsNumber + " X " + set;
+    }
 }

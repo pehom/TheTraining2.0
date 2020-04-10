@@ -8,18 +8,41 @@
     android:orientation="vertical"
     android:background="@color/colorPrimaryDark">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:textColorHint="@color/colorAccent"
+        app:helperText="@string/schedule_title_helper"
+        app:helperTextEnabled="true"
+        app:helperTextTextAppearance="@style/TextAppearanceHelperText"
+        app:hintTextAppearance="@style/TextLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/scheduleTitleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/createScheduleRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="150dp"
-
-        app:layout_constraintBottom_toTopOf="@+id/createScheduleButton"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
     <Button
         android:id="@+id/createScheduleButton"
@@ -53,8 +76,6 @@
         app:helperTextEnabled="true"
         app:helperTextTextAppearance="@style/TextAppearanceHelperText"
         app:helperText="@string/helper_main_activity_input"
-
-
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -62,27 +83,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_add_accent_24dp"
-
             android:onClick="addExercise"
-
             android:textColor="@color/colorAccent"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <Button-->
-<!--        android:id="@+id/addExercise"-->
-<!--        android:layout_width="80dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="44dp"-->
-<!--        android:layout_marginEnd="20dp"-->
-<!--        android:text="+"-->
-<!--        android:textColor="@color/colorAccent"-->
-<!--        android:textSize="30sp"-->
-<!--        android:background="@color/colorPrimaryDark"-->
-<!--        android:onClick="addExercise"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toEndOf="@+id/textInputLayout"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/createScheduleRecyclerView" />-->
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
