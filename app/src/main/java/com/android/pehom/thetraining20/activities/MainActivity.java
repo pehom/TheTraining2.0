@@ -1,8 +1,7 @@
 package com.android.pehom.thetraining20.activities;
 
-        import androidx.annotation.NonNull;
         import androidx.appcompat.app.AppCompatActivity;
-        import androidx.recyclerview.widget.ItemTouchHelper;
+        import androidx.recyclerview.widget.DividerItemDecoration;
         import androidx.recyclerview.widget.LinearLayoutManager;
         import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,12 +11,9 @@ package com.android.pehom.thetraining20.activities;
         import android.util.Log;
         import android.view.MotionEvent;
         import android.view.View;
-        import android.widget.LinearLayout;
         import android.widget.TextView;
 
-        import com.android.pehom.thetraining20.CustomLinearLayoutManager;
         import com.android.pehom.thetraining20.R;
-        import com.android.pehom.thetraining20.adapters.CountAdapter;
         import com.android.pehom.thetraining20.adapters.CreateScheduleAdapter;
         import com.android.pehom.thetraining20.models.Converter;
         import com.android.pehom.thetraining20.models.Exercise;
@@ -37,12 +33,11 @@ package com.android.pehom.thetraining20.activities;
         import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private final String trainingState = "trainingState";
-    private final String trainingProgress = "trainingProgress";
-    private  final String trainingProgressDivider = "!!!";
-    //    private TextView pullupsCountTextView, pullupsTitleTextView;
-//    private int pullupsCount, thePullupsCount;
-    private String daysCompleted, setsDone;
+    private final String TRAINING_STATE = "trainingState";
+    private final String TRAINING_PROGRESS = "trainingProgress";
+    private  final String TRAINING_PROGRESS_DIVIDER = "!!!";
+   // private final String previousScheduleFinished = "previousScheduleFinished";
+    private final  String APP_STATE = "APP_STATE";
     private RecyclerView createSheduleRecyclerView;
     private List<Exercise> exercises;
     private float stopX, startX, dX;
@@ -54,27 +49,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String readFile;
-        readFile = readFromFile(this,trainingState);
-        Log.d("mylog", "onCreate readFromFile = " + readFromFile(this,trainingState));
-        if (readFile.equals("")) {
-            createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
-            createSheduleRecyclerView.setHasFixedSize(true);
-            exercises = new ArrayList<>();
-            exercises.add(new Exercise(getResources().getString(R.string.exercise1), 5,10,0));
-            exercises.add(new Exercise(getResources().getString(R.string.exercise2), 5,  25,0));
-            exercises.add(new Exercise(getResources().getString(R.string.exercise3), 5,  20,0));
-
-            RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
-            createScheduleAdapter = buildScheduleAdapter();
-
-            createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
-            createSheduleRecyclerView.setAdapter(createScheduleAdapter);
-
-        } else if(!readFile.isEmpty()){
-            Log.d("mylog", "MainActivity > onCreate > readFile = " + readFile);
-            Log.d("mylog", "this part");
-            startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
+        Log.d("baba", "main activity on create APP_STATE = " + readFromFile(this, APP_STATE));
+        switch (readFromFile(this, APP_STATE).trim()) {
+            case "":
+            default:
+                createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
+                createSheduleRecyclerView.setHasFixedSize(true);
+                exercises = new ArrayList<>();
+                exercises.add(new Exercise(getResources().getString(R.string.exercise1), 5,10,0));
+                exercises.add(new Exercise(getResources().getString(R.string.exercise2), 5,  25,0));
+                exercises.add(new Exercise(getResources().getString(R.string.exercise3), 5,  20,0));
+                RecyclerView.LayoutManager createScheduleLayoutManager = new LinearLayoutManager(this);
+                createScheduleAdapter = buildScheduleAdapter();
+                createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
+                createSheduleRecyclerView.setAdapter(createScheduleAdapter);
+             //   createSheduleRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                break;
+            case "schedule started":
+                Log.d("baba", "main activity on create TRAINING_STATE = " + readFromFile(this, TRAINING_STATE));
+                startActivity(new Intent(MainActivity.this, ScheduleActivity.class));
+                break;
+            case "schedule finished":
+            case "schedule reset":
+                createSheduleRecyclerView = findViewById(R.id.createScheduleRecyclerView);
+                createSheduleRecyclerView.setHasFixedSize(true);
+                Schedule finishedSchedule = Schedule.fromString(readFromFile(this, TRAINING_STATE));
+                exercises = new ArrayList<>();
+                exercises = finishedSchedule.getExercises();
+                RecyclerView.LayoutManager createScheduleLayoutManager1 = new LinearLayoutManager(this);
+                createScheduleAdapter = buildScheduleAdapter();
+                createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager1);
+                createSheduleRecyclerView.setAdapter(createScheduleAdapter);
+                createSheduleRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                writeToFile(this, APP_STATE, "");
+                break;
         }
     }
 
@@ -249,10 +257,11 @@ public class MainActivity extends AppCompatActivity {
         TextInputEditText titleInputEditText = findViewById(R.id.scheduleTitleEditText);
         String title = titleInputEditText.getText().toString();
         Schedule newSchedule = new Schedule(title, exercises, trainingDays,  0);
-        writeToFile(this, trainingState, newSchedule.toString());
+        writeToFile(this, TRAINING_STATE, newSchedule.toString());
         Log.d("mylog", "newSchedule.toString() = " + newSchedule.toString());
         String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.getDefault());
         updateTrainingProgress(newSchedule);
+        writeToFile(this, APP_STATE, "schedule started");
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         startActivity(intent);
     }
@@ -274,10 +283,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateTrainingProgress (Schedule schedule) {
         String data = schedule.getTitle() +"schDi" +
-                Converter.exercisesToString(schedule.getExercises()) + trainingProgressDivider;
-        String s = readFromFile(this, trainingProgress);
+                Converter.exercisesToString(schedule.getExercises()) + TRAINING_PROGRESS_DIVIDER;
+        String s = readFromFile(this, TRAINING_PROGRESS);
         Log.d("updateTrainingProgress", "readTrainingProgress =" + s );
-        writeToFile(this, trainingProgress, s +data );
+        writeToFile(this, TRAINING_PROGRESS, s +data );
         Log.d ("updateTrainingProgress", "writeTrainingProgress =" + s + data);
     }
 }

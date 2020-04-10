@@ -2,27 +2,24 @@ package com.android.pehom.thetraining20.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.adapters.TrainingDayAdapter;
-import com.android.pehom.thetraining20.models.Converter;
 import com.android.pehom.thetraining20.models.Exercise;
 import com.android.pehom.thetraining20.models.Schedule;
-import com.android.pehom.thetraining20.models.TrainingDay;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -31,22 +28,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.Objects;
 
 public class TrainingDayActivity extends AppCompatActivity {
-    private final String trainingState = "trainingState";
+    private final  String APP_STATE = "APP_STATE";
+    private final String TRAINING_STATE = "trainingState";
     private int dayNumber;
-   // private TrainingDay[] sets;
-   // private View.OnClickListener onSetClickListener;
     private  boolean resetFlag;
     private Schedule schedule;
-    private List<Exercise> exercises;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_day);
         resetFlag = false;
         String readFile;
-        readFile = readFromFile(this, trainingState);
+        readFile = readFromFile(this, TRAINING_STATE);
         if (!readFile.isEmpty()) {
             schedule = Schedule.fromString(readFile);
             dayNumber = schedule.getDaysCompleted()+1;
@@ -57,6 +53,9 @@ public class TrainingDayActivity extends AppCompatActivity {
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(layoutManager);
+            DividerItemDecoration divider = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+            divider.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(this, R.drawable.divider)));
+            recyclerView.addItemDecoration(divider);
         }
     }
 
@@ -104,15 +103,14 @@ public class TrainingDayActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!resetFlag) {
-            writeToFile(this, trainingState, schedule.toString());
+            writeToFile(this, TRAINING_STATE, schedule.toString());
             Log.d("mylog", "onStop TrainAc writeToFile() = " + schedule.toString());
-           // Log.d("mylog", "onStop TrainAc readFromFile() = " + readFromFile(this, trainingState));
         }
     }
 
     @Override
     public void onBackPressed() {
-        writeToFile(this, trainingState, schedule.toString());
+        writeToFile(this, TRAINING_STATE, schedule.toString());
         Log.d("mylog", "onBackPressed writeToFile() = " + schedule.toString());
         startActivity(new Intent(TrainingDayActivity.this, ScheduleActivity.class));
     }
@@ -128,7 +126,8 @@ public class TrainingDayActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.resetTraining:
-                writeToFile(this, trainingState, "");
+                writeToFile(this, TRAINING_STATE, schedule.toString());
+                writeToFile(this, APP_STATE, "schedule reset");
                 resetFlag = true;
                 startActivity(new Intent(TrainingDayActivity.this, MainActivity.class));
                 finishAffinity();
