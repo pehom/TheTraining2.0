@@ -21,8 +21,6 @@ import com.android.pehom.thetraining20.R;
 import com.android.pehom.thetraining20.models.Converter;
 import com.android.pehom.thetraining20.models.Exercise;
 import com.android.pehom.thetraining20.models.Schedule;
-import com.android.pehom.thetraining20.models.TrainingDay;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,7 +37,6 @@ public class ScheduleActivity extends AppCompatActivity {
     private boolean resetFlag;
     private Schedule schedule;
     private int daysCompleted;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +59,7 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         }
     }
+
     public void createTrainingTable(int daysQompleted) {
         TextView[] daysTextViews = new TextView[] {findViewById(R.id.day1TextView),findViewById(R.id.day2TextView),
                 findViewById(R.id.day3TextView),findViewById(R.id.day4TextView),
@@ -90,17 +88,13 @@ public class ScheduleActivity extends AppCompatActivity {
                     Log.d("mylog", "daysCompleted ="+ daysCompleted );
                     writeToFile(getApplicationContext(), TRAINING_STATE, schedule.toString());
                     Intent intent = new Intent(ScheduleActivity.this, TrainingDayActivity.class);
-                    /*intent.putExtra("dayNumber", days[daysCompleted].getThisDayNumber());
-                    intent.putExtra("thePullupsCount", thePullupsCount);
-                    intent.putExtra("setsDone", setsDone);*/
                     startActivityForResult(intent, 123);
                 }
             });
         }
-
     }
 
-    @Override
+   /* @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123) {
@@ -109,7 +103,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 infoTextView.setText("set has been done");
             }
         }
-    }
+    }*/
 
     public void writeToFile(Context context,String fileName,  String data) {
         try {
@@ -122,13 +116,11 @@ public class ScheduleActivity extends AppCompatActivity {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
+
     private String readFromFile(Context context, String fileName) {
-
         String ret = "";
-
         try {
             InputStream inputStream = context.openFileInput(fileName);
-
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -148,7 +140,6 @@ public class ScheduleActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
-
         return ret;
     }
 
@@ -184,7 +175,6 @@ public class ScheduleActivity extends AppCompatActivity {
     public void onBackPressed() {
         finishAffinity();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

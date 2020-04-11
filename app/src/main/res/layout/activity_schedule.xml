@@ -83,7 +83,6 @@
                 android:gravity="center"
                 android:textColor="@color/colorAccent"
                 android:textSize="30sp"
-                android:textStyle="bold"
                 android:text="5"/>
 
             <TextView
@@ -96,7 +95,6 @@
                 android:gravity="center"
                 android:textColor="@color/colorAccent"
                 android:textSize="30sp"
-                android:textStyle="bold"
                 android:text="6"/>
 
             <TextView
