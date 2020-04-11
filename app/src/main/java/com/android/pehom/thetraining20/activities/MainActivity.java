@@ -1,5 +1,6 @@
 package com.android.pehom.thetraining20.activities;
 
+        import androidx.annotation.RequiresApi;
         import androidx.appcompat.app.AppCompatActivity;
         import androidx.recyclerview.widget.DividerItemDecoration;
         import androidx.recyclerview.widget.LinearLayoutManager;
@@ -7,7 +8,11 @@ package com.android.pehom.thetraining20.activities;
 
         import android.content.Context;
         import android.content.Intent;
+        import android.icu.text.SimpleDateFormat;
+        import android.icu.util.TimeZone;
+        import android.os.Build;
         import android.os.Bundle;
+        import android.text.format.DateUtils;
         import android.util.Log;
         import android.view.MotionEvent;
         import android.view.View;
@@ -29,6 +34,7 @@ package com.android.pehom.thetraining20.activities;
         import java.io.OutputStreamWriter;
         import java.util.ArrayList;
         import java.util.Calendar;
+        import java.util.Date;
         import java.util.List;
         import java.util.Locale;
 
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private  final String TRAINING_PROGRESS_DIVIDER = "!!!";
    // private final String previousScheduleFinished = "previousScheduleFinished";
     private final  String APP_STATE = "APP_STATE";
+    private  final static String DATE_FORMAT_4 = "dd-MMMM-yyyy";
     private RecyclerView createSheduleRecyclerView;
     private List<Exercise> exercises;
     private float stopX, startX, dX;
@@ -48,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Log.d("baba", "main activity on create APP_STATE = " + readFromFile(this, APP_STATE));
         switch (readFromFile(this, APP_STATE).trim()) {
             case "":
@@ -249,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
         return ret;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void createSchedule(View view) {
         List<TrainingDay> trainingDays = new ArrayList<>();
         for (int i=0;i<28;i++){
@@ -256,17 +263,16 @@ public class MainActivity extends AppCompatActivity {
         }
         TextInputEditText titleInputEditText = findViewById(R.id.scheduleTitleEditText);
         String title = titleInputEditText.getText().toString();
-        Schedule newSchedule = new Schedule(title, exercises, trainingDays,  0);
+        String dayLongName =  new SimpleDateFormat("dd-MMMM-yyyy", Locale.getDefault()).format(new Date());
+
+        Schedule newSchedule = new Schedule(title+" started at " + dayLongName, exercises, trainingDays,  0);
         writeToFile(this, TRAINING_STATE, newSchedule.toString());
         Log.d("mylog", "newSchedule.toString() = " + newSchedule.toString());
-        String dayLongName = Calendar.getInstance().getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG, Locale.getDefault());
         updateTrainingProgress(newSchedule);
         writeToFile(this, APP_STATE, "schedule started");
         Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         startActivity(intent);
     }
-
-
 
     public void addExercise(View view) {
         TextInputEditText textInputEditText = findViewById(R.id.customExerciseTextInputEditText);
@@ -289,4 +295,5 @@ public class MainActivity extends AppCompatActivity {
         writeToFile(this, TRAINING_PROGRESS, s +data );
         Log.d ("updateTrainingProgress", "writeTrainingProgress =" + s + data);
     }
+
 }

@@ -212,7 +212,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 infoTitleTextView.setText(R.string.info_textview_training_progress);
                 Log.d("trainingProgress", "readData = " + readFromFile(this, TRAINING_PROGRESS));
                 String[] splittedData = readFromFile(this, TRAINING_PROGRESS).split(TRAINING_PROGRESS_DIVIDER);
-                if (splittedData.length>1) {
+                if (!splittedData[0].equals("")) {
                     for (int i = 0; i< splittedData.length; i++) {
                         String[] splittedSchedule = splittedData[i].split("schDi");
                         infoTextView.append(splittedSchedule[0] + "\n");
