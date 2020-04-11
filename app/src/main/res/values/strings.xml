@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TheTraining</string>
+    <string name="app_name">TheWorkout</string>
     <string name="create_schedule_btn">CREATE SCHEDULE</string>
     <string name="exercise1">pull-ups</string>
     <string name="exercise2">jumps</string>

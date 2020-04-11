@@ -1,6 +1,6 @@
 package com.android.pehom.thetraining20.activities;
 
-        import androidx.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
         import androidx.appcompat.app.AppCompatActivity;
         import androidx.recyclerview.widget.DividerItemDecoration;
         import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private final String TRAINING_STATE = "trainingState";
     private final String TRAINING_PROGRESS = "trainingProgress";
     private  final String TRAINING_PROGRESS_DIVIDER = "!!!";
-   // private final String previousScheduleFinished = "previousScheduleFinished";
     private final  String APP_STATE = "APP_STATE";
     private  final static String DATE_FORMAT_4 = "dd-MMMM-yyyy";
     private RecyclerView createSheduleRecyclerView;
     private List<Exercise> exercises;
     private float stopX, startX, dX;
     private CreateScheduleAdapter createScheduleAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 createScheduleAdapter = buildScheduleAdapter();
                 createSheduleRecyclerView.setLayoutManager(createScheduleLayoutManager);
                 createSheduleRecyclerView.setAdapter(createScheduleAdapter);
-             //   createSheduleRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                createSheduleRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
                 break;
             case "schedule started":
                 Log.d("baba", "main activity on create TRAINING_STATE = " + readFromFile(this, TRAINING_STATE));
