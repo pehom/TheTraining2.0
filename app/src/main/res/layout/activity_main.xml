@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:orientation="vertical"
-    android:background="@color/colorPrimaryDark">
+    android:background="@drawable/background3">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout2"
@@ -44,8 +44,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
-    <Button
+    <android.support.design.button.MaterialButton
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:id="@+id/createScheduleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_schedule_btn"
+        android:textColor="@color/colorAccent"
+        android:textSize="15sp"
+        app:backgroundTint="@android:color/transparent"
+        app:cornerRadius="8dp"
+        app:rippleColor="#33AAAAAA"
+        app:strokeColor="@color/green"
+        app:strokeWidth="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="90dp"/>
+
+    <!--<com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -57,7 +74,8 @@
         android:textColor="@color/colorAccent"
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        />-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
