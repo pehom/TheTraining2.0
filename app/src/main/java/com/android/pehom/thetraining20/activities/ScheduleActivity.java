@@ -42,6 +42,8 @@ public class ScheduleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+        setTitle(R.string.activity_title);
+
         resetFlag = false;
         String readFile;
         readFile = readFromFile(this, TRAINING_STATE);

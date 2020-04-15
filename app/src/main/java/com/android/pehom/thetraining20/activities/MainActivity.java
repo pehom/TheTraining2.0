@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle(R.string.activity_title);
         Log.d("baba", "main activity on create APP_STATE = " + readFromFile(this, APP_STATE));
         switch (readFromFile(this, APP_STATE).trim()) {
             case "":
@@ -94,13 +95,14 @@ public class MainActivity extends AppCompatActivity {
         final CreateScheduleAdapter adapter = new CreateScheduleAdapter(exercises, new CreateScheduleAdapter.OnTitleTouchListener() {
             @Override
             public void onTitleTouch(RecyclerView.ViewHolder viewHolder, MotionEvent event, int position) {
+               viewHolder.itemView.getParent().requestDisallowInterceptTouchEvent(true);
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: // нажатие
                         startX = event.getRawX();
                         dX = viewHolder.itemView.getX() - event.getRawX();
                         break;
                     case MotionEvent.ACTION_MOVE: // движение
-                        if (event.getRawX() > startX) {
+                        if (event.getRawX() > startX ) {
                             viewHolder.itemView.animate()
                                     .x(event.getRawX() + dX)
                                     .setDuration(0)
@@ -111,10 +113,10 @@ public class MainActivity extends AppCompatActivity {
                         stopX = event.getRawX();
                         Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
 
-                        if (stopX - startX > 200) {
+                        if (stopX - startX > 150 ) {
                             createScheduleAdapter.removeItem(viewHolder);
                         }
-                        else {
+                        else if (stopX - startX < 150 ){
                             viewHolder.itemView.animate()
                                     .x(0)
                                     .setDuration(0)
@@ -134,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         }, new CreateScheduleAdapter.OnSetsNumberTouchListener() {
             @Override
             public void onSetsNumberTouch(TextView tv, MotionEvent event, int position) {
+                tv.getParent().requestDisallowInterceptTouchEvent(true);
+
                 int setsNumber;
                 try {
                     setsNumber = Integer.parseInt(tv.getText().toString());
@@ -154,13 +158,13 @@ public class MainActivity extends AppCompatActivity {
                         stopX = event.getRawX();
                         Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
 
-                        if (stopX - startX > 0) {
+                        if (stopX - startX > 0 ) {
                             if (setsNumber>0)  {
                                 setsNumber--;
                             }
                             tv.setText("" + setsNumber);
                             exercises.get(position).setSetsNumber(setsNumber);
-                        } else if (stopX - startX < 0) {
+                        } else if (stopX - startX < 0 ) {
                             setsNumber++;
                             tv.setText("" + setsNumber);
                             exercises.get(position).setSetsNumber(setsNumber);
@@ -174,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
         }, new CreateScheduleAdapter.OnSetTouchListener() {
             @Override
             public void onCountTouch(TextView tv, MotionEvent event, int position) {
+                tv.getParent().requestDisallowInterceptTouchEvent(true);
+
                 int set;
                 try {
                     set = Integer.parseInt(tv.getText().toString());
@@ -192,14 +198,14 @@ public class MainActivity extends AppCompatActivity {
                         stopX = event.getRawX();
                         Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
 
-                        if (stopX - startX > 0) {
+                        if (stopX - startX > 0 ) {
                             if (set>0) {
                                 set--;
                             }
                             tv.setText("" + set);
                             exercises.get(position).setSet(set);
 
-                        } else if (stopX - startX < 0) {
+                        } else if (stopX - startX < 0 ) {
                             set++;
                             tv.setText("" + set);
                             exercises.get(position).setSet(set);
@@ -211,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         return adapter;
     }
 
