@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.activity_title);
+
         Log.d("baba", "main activity on create APP_STATE = " + readFromFile(this, APP_STATE));
         switch (readFromFile(this, APP_STATE).trim()) {
             case "":
@@ -113,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
                         stopX = event.getRawX();
                         Log.d("mylog", "startx = " + startX + "  stopx = " + stopX);
 
-                        if (stopX - startX > 150 ) {
+                        if (stopX - startX > 200 ) {
                             createScheduleAdapter.removeItem(viewHolder);
                         }
-                        else if (stopX - startX < 150 ){
+                        else if (stopX - startX < 200 ){
                             viewHolder.itemView.animate()
                                     .x(0)
                                     .setDuration(0)

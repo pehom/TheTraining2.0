@@ -21,7 +21,8 @@
         app:hintTextAppearance="@style/TextLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/scheduleTitleEditText"
@@ -79,6 +80,7 @@
         app:helperTextEnabled="true"
         app:helperTextTextAppearance="@style/TextAppearanceHelperText"
         app:helperText="@string/helper_main_activity_input"
+        android:background="@color/colorPrimaryDark"
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -88,7 +90,8 @@
             android:drawableEnd="@drawable/ic_add_accent_24dp"
             android:onClick="addExercise"
             android:textColor="@color/colorAccent"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:background="@color/colorPrimaryDark"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 

@@ -62,12 +62,12 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
         holder.exerciseTitleTextView.setText(data.get(position).getTitle());
         holder.setsDone = data.get(position).getSetsDone();
         final int setsNumber = data.get(position).getSetsNumber();
-        final TextView[] textViews = new TextView[(setsNumber/9+1)*9];
+        final TextView[] textViews = new TextView[(setsNumber/7+1)*7];
 
-        if (setsNumber > 9) {
-            final LinearLayout[] childLinearLayouts = new LinearLayout[setsNumber / 9 + 1];
+        if (setsNumber > 7) {
+            final LinearLayout[] childLinearLayouts = new LinearLayout[setsNumber / 7 + 1];
           //  Log.d("trainingDayAdapter", "setsNumber / 9 = " + setsNumber + " / " + "9" + " = " + setsNumber / 9);
-            for (int n = 0; n <= setsNumber / 9; n++) {
+            for (int n = 0; n <= setsNumber / 7; n++) {
                 childLinearLayouts[n] = new LinearLayout(holder.trainingDayParentLinearLayout.getContext());
                 LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 childParams.setMargins(0, 20, 0, 0);
@@ -75,22 +75,22 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
                 childLinearLayouts[n].setOrientation(LinearLayout.HORIZONTAL);
                 holder.trainingDayParentLinearLayout.addView(childLinearLayouts[n]);
 
-                for (int i = 0; i < 9; i++) {
+                for (int i = 0; i < 7; i++) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, 140, 1);
                   //  Log.d("getWidth", "i = " + i);
                     layoutParams.setMargins(10, 0, 10, 0);
-                    textViews[i + n * 9] = new TextView(holder.trainingDayParentLinearLayout.getContext());
-                    textViews[i + n * 9].setLayoutParams(layoutParams);
-                    textViews[i + n * 9].setText("" + data.get(position).getSet());
-                    textViews[i + n * 9].setGravity(Gravity.CENTER);
-                    textViews[i + n * 9].setTextSize((float) 30);
-                    textViews[i + n * 9].setBackgroundColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimary));
+                    textViews[i + n * 7] = new TextView(holder.trainingDayParentLinearLayout.getContext());
+                    textViews[i + n * 7].setLayoutParams(layoutParams);
+                    textViews[i + n * 7].setText("" + data.get(position).getSet());
+                    textViews[i + n * 7].setGravity(Gravity.CENTER);
+                    textViews[i + n * 7].setTextSize((float) 30);
+                    textViews[i + n * 7].setBackgroundColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimary));
                     if (i < holder.setsDone) {
-                        textViews[i + n * 9].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimaryDark));
-                        textViews[i + n * 9].setClickable(false);
+                        textViews[i + n * 7].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimaryDark));
+                        textViews[i + n * 7].setClickable(false);
                     } else {
-                        textViews[i + n * 9].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorAccent));
-                        final int finalI = i + n * 9;
+                        textViews[i + n * 7].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorAccent));
+                        final int finalI = i + n * 7;
                         clickListener = new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -152,11 +152,11 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
                                 }
                             }
                         };
-                        textViews[i + n * 9].setOnClickListener(clickListener);
+                        textViews[i + n * 7].setOnClickListener(clickListener);
                     }
-                    childLinearLayouts[n].addView(textViews[i + n * 9]);
-                    if ((i + n * 9) >= setsNumber) {
-                        textViews[i + n * 9].setVisibility(View.INVISIBLE);
+                    childLinearLayouts[n].addView(textViews[i + n * 7]);
+                    if ((i + n * 7) >= setsNumber) {
+                        textViews[i + n * 7].setVisibility(View.INVISIBLE);
                     }
                 }
             }
