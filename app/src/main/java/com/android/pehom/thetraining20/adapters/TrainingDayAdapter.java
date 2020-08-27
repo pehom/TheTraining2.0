@@ -41,7 +41,6 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
             }
         }
         this.schedule = schedule;
-
     }
 
     @NonNull
@@ -50,9 +49,6 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.training_day_recyclerview_item, parent,false);
         TrainingDayViewHolder viewHolder = new TrainingDayViewHolder(view, 0);
-       // int position = viewHolder.getAdapterPosition();
-
-
         return viewHolder;
     }
 
@@ -62,12 +58,12 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
         holder.exerciseTitleTextView.setText(data.get(position).getTitle());
         holder.setsDone = data.get(position).getSetsDone();
         final int setsNumber = data.get(position).getSetsNumber();
-        final TextView[] textViews = new TextView[(setsNumber/7+1)*7];
 
-        if (setsNumber > 7) {
-            final LinearLayout[] childLinearLayouts = new LinearLayout[setsNumber / 7 + 1];
+        if (setsNumber > 5) {
+            final TextView[] textViews = new TextView[(setsNumber/5+1)*5];
+            final LinearLayout[] childLinearLayouts = new LinearLayout[setsNumber / 5 +1 ];
           //  Log.d("trainingDayAdapter", "setsNumber / 9 = " + setsNumber + " / " + "9" + " = " + setsNumber / 9);
-            for (int n = 0; n <= setsNumber / 7; n++) {
+            for (int n = 0; n <= setsNumber / 5; n++) {
                 childLinearLayouts[n] = new LinearLayout(holder.trainingDayParentLinearLayout.getContext());
                 LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 childParams.setMargins(0, 20, 0, 0);
@@ -75,22 +71,22 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
                 childLinearLayouts[n].setOrientation(LinearLayout.HORIZONTAL);
                 holder.trainingDayParentLinearLayout.addView(childLinearLayouts[n]);
 
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 5; i++) {
                     LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, 140, 1);
                   //  Log.d("getWidth", "i = " + i);
                     layoutParams.setMargins(10, 0, 10, 0);
-                    textViews[i + n * 7] = new TextView(holder.trainingDayParentLinearLayout.getContext());
-                    textViews[i + n * 7].setLayoutParams(layoutParams);
-                    textViews[i + n * 7].setText("" + data.get(position).getSet());
-                    textViews[i + n * 7].setGravity(Gravity.CENTER);
-                    textViews[i + n * 7].setTextSize((float) 30);
-                    textViews[i + n * 7].setBackgroundColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimary));
+                    textViews[i + n * 5] = new TextView(holder.trainingDayParentLinearLayout.getContext());
+                    textViews[i + n * 5].setLayoutParams(layoutParams);
+                    textViews[i + n * 5].setText("" + data.get(position).getSet());
+                    textViews[i + n * 5].setGravity(Gravity.CENTER);
+                    textViews[i + n * 5].setTextSize((float) 30);
+                    textViews[i + n * 5].setBackground(ContextCompat.getDrawable(holder.trainingDayParentLinearLayout.getContext(), R.drawable.rounded_textview));
                     if (i < holder.setsDone) {
-                        textViews[i + n * 7].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimaryDark));
-                        textViews[i + n * 7].setClickable(false);
+                        textViews[i + n * 5].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimaryDark));
+                        textViews[i + n * 5].setClickable(false);
                     } else {
-                        textViews[i + n * 7].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorAccent));
-                        final int finalI = i + n * 7;
+                        textViews[i + n * 5].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorAccent));
+                        final int finalI = i + n * 5;
                         clickListener = new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -152,15 +148,16 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
                                 }
                             }
                         };
-                        textViews[i + n * 7].setOnClickListener(clickListener);
+                        textViews[i + n * 5].setOnClickListener(clickListener);
                     }
-                    childLinearLayouts[n].addView(textViews[i + n * 7]);
-                    if ((i + n * 7) >= setsNumber) {
-                        textViews[i + n * 7].setVisibility(View.INVISIBLE);
+                    childLinearLayouts[n].addView(textViews[i + n * 5]);
+                    if ((i + n * 5) >= setsNumber) {
+                        textViews[i + n * 5].setVisibility(View.INVISIBLE);
                     }
                 }
             }
         } else {
+            final TextView[] textViews = new TextView[setsNumber];
             LinearLayout childLinearLayout = new LinearLayout(holder.trainingDayParentLinearLayout.getContext());
             LinearLayout.LayoutParams childParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             childParams.setMargins(0, 20, 0, 0);
@@ -176,7 +173,7 @@ public class TrainingDayAdapter extends RecyclerView.Adapter<TrainingDayAdapter.
                 textViews[i].setText("" + data.get(position).getSet());
                 textViews[i].setGravity(Gravity.CENTER);
                 textViews[i].setTextSize((float) 30);
-                textViews[i].setBackgroundColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimary));
+                textViews[i].setBackground(ContextCompat.getDrawable(holder.trainingDayParentLinearLayout.getContext(), R.drawable.rounded_textview));
                 if (i < holder.setsDone) {
                     textViews[i].setTextColor(ContextCompat.getColor(holder.trainingDayParentLinearLayout.getContext(), R.color.colorPrimaryDark));
                     textViews[i].setClickable(false);
